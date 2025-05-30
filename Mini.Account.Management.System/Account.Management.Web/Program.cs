@@ -51,8 +51,7 @@ namespace Account.Management.Web
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
                 var migrationAssembly = Assembly.GetExecutingAssembly() ?? throw new InvalidOperationException("Migration Assembly not found.");
 
-                builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+                builder.Services.RegisterServices(connectionString, migrationAssembly);
 
                 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

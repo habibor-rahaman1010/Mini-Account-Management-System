@@ -1,12 +1,25 @@
-﻿using Account.Management.Infrastructure.Account.Management.Identity;
+﻿using Account.Management.Domain;
+using Account.Management.Infrastructure.Account.Management.Identity;
 using Account.Management.Infrastructure.DbContexts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Account.Management.Infrastructure.Extentions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection RegisterServices(this IServiceCollection services, string connectionString, Assembly migrationAssembly)
+        {
+            //Resolved here all service dependencies...
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, (m) => m.MigrationsAssembly(migrationAssembly)));
+            services.AddScoped<IApplicationTime, ApplicationTime>();
+
+            return services;
+        }
+
+
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
             services
