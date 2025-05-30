@@ -1,9 +1,10 @@
-using Account.Management.Web.Data;
+using Account.Management.Infrastructure.DbContexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
+using System.Reflection;
 
 namespace Account.Management.Web
 {
@@ -44,12 +45,15 @@ namespace Account.Management.Web
                     .ReadFrom.Configuration(builder.Configuration);
 
                 });
-                #endregion
+                #endregion             
 
                 // Add services to the container.
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+                var migrationAssembly = Assembly.GetExecutingAssembly() ?? throw new InvalidOperationException("Migration Assembly not found.");
+
                 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(connectionString));
+                    options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+
                 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
                 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
