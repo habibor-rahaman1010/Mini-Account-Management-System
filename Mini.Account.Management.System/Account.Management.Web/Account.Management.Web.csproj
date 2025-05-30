@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Account.Management.Infrastructure\Account.Management.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\" />
+  </ItemGroup>
+
 </Project>

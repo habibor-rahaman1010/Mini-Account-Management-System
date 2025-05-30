@@ -1,5 +1,5 @@
 using Account.Management.Infrastructure.DbContexts;
-using Microsoft.AspNetCore.Identity;
+using Account.Management.Infrastructure.Extentions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -56,8 +56,8 @@ namespace Account.Management.Web
 
                 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-                builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
+                builder.Services.AddIdentity();
+
                 builder.Services.AddControllersWithViews();
 
                 var app = builder.Build();
@@ -84,10 +84,7 @@ namespace Account.Management.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}")
                     .WithStaticAssets();
-
-                app.MapRazorPages()
-                   .WithStaticAssets();
-
+              
                 await app.RunAsync();
             }
             catch (Exception ex)
