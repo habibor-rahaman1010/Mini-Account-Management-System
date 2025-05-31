@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Account.Management.Web.Models.AccoutModels;
 using Microsoft.AspNetCore.Authentication;
+using Account.Management.Infrastructure.Extentions;
+using Account.Management.Web.Areas.Admin.Models;
 
 namespace Account.Management.Web.Controllers.Account
 {
@@ -47,25 +49,35 @@ namespace Account.Management.Web.Controllers.Account
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email,
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (await UserAlreadyExist(user.Email) == true)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-                    await _userManager.AddToRoleAsync(user, "Viewer");
-                  
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    TempData.Put("ResponseMessage", new ResponseModel
                     {
-                        return RedirectToAction("RegisterConfirmation", new { email = model.Email, returnUrl = model.ReturnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Home");
-                    }
+                        Message = $"The Email : '{user.Email}' alredy exist try again by another email!",
+                        Type = ResponseTypes.Danger
+                    });
+                    return RedirectToAction("Index", "Home");
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created a new account with password.");
+                        await _userManager.AddToRoleAsync(user, "Viewer");
+
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "The account has been created successfuly!",
+                            Type = ResponseTypes.Success
+                        });
+                        return RedirectToAction("Index", "Home");
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
             return View(model);
@@ -107,6 +119,11 @@ namespace Account.Management.Web.Controllers.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "The user loged in successfuly!",
+                        Type = ResponseTypes.Success
+                    });
                     return LocalRedirect(model.ReturnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -121,11 +138,17 @@ namespace Account.Management.Web.Controllers.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "The user can not login somthing happed wrong!",
+                        Type = ResponseTypes.Danger
+                    });
                     return View(model);
                 }
             }
             return View(model);
         }
+
 
         //--------Logout Code-----------
         [AllowAnonymous]
@@ -135,8 +158,22 @@ namespace Account.Management.Web.Controllers.Account
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             returnUrl ??= Url.Content("~/");
-
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "The user loged out successfuly!",
+                Type = ResponseTypes.Success
+            });
             return LocalRedirect(returnUrl);
+        }
+
+        private async Task<bool> UserAlreadyExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

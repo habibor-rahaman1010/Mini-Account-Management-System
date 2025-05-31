@@ -1,0 +1,55 @@
+﻿@model UserUpdateModel;
+
+<!-- Modal for update Sub Category -->
+<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Update The User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-antiforgery="true" id="updateUserForm" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" id="updateUserId" name="Id" />
+
+                    <div class="form-group">
+                        <label asp-for="FirstName">First Name</label>
+                        <input asp-for="FirstName" type="text" class="form-control" id="editFirstName" name="FirstName" required>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="LastName">Last Name</label>
+                        <input asp-for="LastName" type="text" class="form-control" id="editLastName" name="LastName" required>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" type="text" class="form-control" id="editEmail" name="Email" required readonly>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber">Phone Number</label>
+                        <input asp-for="PhoneNumber" type="text" class="form-control" id="editPhoneNumber" name="PhoneNumber" required>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Address">Address</label>
+                        <textarea asp-for="Address" class="form-control" id="editAddress" name="Address" rows="3"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+
+                    <div id="editRoles"></div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

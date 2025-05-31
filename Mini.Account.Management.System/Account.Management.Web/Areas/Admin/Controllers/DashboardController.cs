@@ -3,7 +3,7 @@
 namespace Account.Management.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class DashbordController : Controller
+    public class DashboardController : Controller
     {
         public IActionResult Index()
         {

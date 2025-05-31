@@ -1,3 +1,313 @@
 ﻿@{
     ViewData["Title"] = "User List";
 }
+
+<style>
+    .toast {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .toast-body {
+        width: 100%;
+        text-align: center;
+    }
+
+    table.dataTable {
+        border: 1px solid #dee2e6;
+    }
+
+    table.dataTable th,
+    table.dataTable td {
+        border: 1px solid #dee2e6 !important;
+    }
+
+    div#AllUsers_filter {
+        margin-bottom: 20px;
+    }
+</style>
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+}
+
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="userToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body d-flex" id="toastMessage">
+            <!-- Toast message will be dynamically set here -->
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid py-3">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">All Users</h2>
+            </div>
+            <div class="card-body">
+                <table id="AllUsers" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Email Confirmed</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Email Confirmed</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+ <partial name="_UpdateUserModal" />
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Delete Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this record?</p>
+                <p>If you delete this it gone forever!</p>
+            </div>
+            <div class="modal-footer">
+                <!-- The form that will be submitted when delete is confirmed -->
+                <form method="POST" id="applicableTaxForm" asp-antiforgery="true" , enctype="multipart/form-data">
+                    <!-- Hidden input to store the ID of the item to be deleted -->
+                    <input type="hidden" id="delete-id" name="id">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirm_delete_button">Confirm Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#AllUsers").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "/Admin/AccountManagement/GetUserList",
+                    type: "POST",
+                    dataType: "json",
+                    data: function (d) {
+                        d.search = d.search.value;
+
+                        // Map DataTables' "dir" to "Direction" for sorting
+                        d.order = d.order.map(function (order) {
+                            return {
+                                Column: order.column,         // Column index
+                                Direction: order.dir          // Convert "dir" to "Direction"
+                            };
+                        });
+                    }
+                },
+                columns: [
+                    { data: "userName", title: "Username" },                  
+                    { data: "email", title: "Email" },
+                    {
+                        data: "emailConfirmed", title: "Email Confirmed", render: function (data, type, row) {
+                            return data ? 'Yes' : 'No';
+                        }
+                    },
+                    { data: "roleNames", title: "Roles" },
+
+                    {
+                        data: "id",
+                        title: "Actions",
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `<button type="button" class="btn btn-info btn-sm update-user" data-id='${data}' data-toggle="modal" data-target="#updateUserModal">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </button>
+
+                                    <button type="submit" class="btn btn-danger btn-sm delete-user" data-id='${data}' value='${data}'>
+                                        <i class="fas fa-trash">
+                                        </i>
+                                        Delete
+                                    </button>`;
+                        }
+                    }
+                ],
+                pageLength: 10,
+            });
+        });
+
+        
+        //This is our user delete code...
+        $(document).ready(function () {
+            // Handle the click event on delete buttons in the list
+            $('#AllUsers').on('click', '.delete-user', function (e) {
+                let id = $(this).data("id");  // Get the ID of the item to delete
+                $("#delete-id").val(id);  // Set the hidden input value with the ID
+                $("#delete-modal").modal('show');  // Show the delete confirmation modal
+            });
+
+            // Handle the delete confirmation button click
+            $("#confirm_delete_button").click(function () {
+                let id = $("#delete-id").val();  // Get the ID from the hidden input
+                // Send the delete request via AJAX
+                $.ajax({
+                    url: '/Admin/AllUser/DeleteUser',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()  // Include anti-forgery token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Close the modal
+                            $('#delete-modal').modal('hide');
+
+                            // Display toast notification
+                            $('#toastMessage').text(response.message);
+                            $('#userToast').toast({
+                                delay: 3000
+                            });
+                            $('#userToast').toast('show');
+                            // Refresh the DataTable
+                            $('#AllUsers').DataTable().ajax.reload();
+                        }
+                        else {
+                            $('#toastMessage').text(response.message);
+                            $('#userToast').toast({
+                                delay: 3000
+                            });
+                            $('#userToast').toast('show');
+                        }
+                    },
+                    error: function (error) {
+                        if (error.status === 403) {
+                            // Redirect to Access Denied page if the status is 403
+                            window.location.href = '/Account/AccessDenied';
+                        }
+                        else {
+                            $('#toastMessage').text('There was an error deleting the user.');
+                            $('#userToast').toast({
+                                delay: 3000
+                            });
+                            $('#userToast').toast('show');
+                        }
+                    }
+                });
+            });
+        });
+
+        //This is user update code...
+        $('#AllUsers').on('click', '.update-user', function () {
+            var userId = $(this).data('id');
+
+            $.ajax({
+                url: '/Admin/AllUser/GetUserById',
+                method: 'GET',
+                data: { id: userId },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate user data
+                        $('#updateUserId').val(response.data.id);
+                        $('#editFirstName').val(response.data.firstName);
+                        $('#editLastName').val(response.data.lastName);
+                        $('#editEmail').val(response.data.email);
+                        $('#editPhoneNumber').val(response.data.phoneNumber);
+                        $('#editAddress').val(response.data.address);
+
+                        // Populate roles checkboxes
+                        var rolesContainer = $('#editRoles');
+                        rolesContainer.empty(); // Clear any previous checkboxes
+
+                        $.each(response.data.availableRoles, function (index, role) {
+                            var isChecked = response.data.userRoles.includes(role) ? 'checked' : '';
+                            rolesContainer.append(`
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Roles" value="${role}" id="role-${index}" ${isChecked}>
+                                    <label class="form-check-label" for="role-${index}">${role}</label>
+                                </div>
+                            `);
+                        });
+
+                        // Show the update modal
+                        $('#updateUserModal').modal('show');
+                    } else {
+                        alert('Error fetching user data');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while fetching the user data.');
+                }
+            });
+        });
+
+        $('#updateUserForm').on('submit', function (e) {
+            e.preventDefault();
+
+            // Get selected roles
+            var selectedRoles = [];
+            $('#editRoles input[name="Roles"]:checked').each(function () {
+                selectedRoles.push($(this).val());
+            });
+
+            console.log(selectedRoles);
+
+            $.ajax({
+                url: '/Admin/AllUser/UpdateUser',
+                method: 'POST',
+                data: $(this).serializeArray(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#updateUserModal').modal('hide');
+                        $('#updateUserForm')[0].reset();
+
+                        $('#toastMessage').text(response.message);
+                        $('#userToast').toast({ delay: 3000 });
+                        $('#userToast').toast('show');
+
+                        $('#AllUsers').DataTable().ajax.reload();
+                    } else {
+                        $('#toastMessage').text(response.message);
+                        $('#userToast').toast({ delay: 3000 });
+                        $('#userToast').toast('show');
+                    }
+                },
+                error: function () {
+                    $('#toastMessage').text('There was an error updating the user.');
+                    $('#userToast').toast({ delay: 3000 });
+                    $('#userToast').toast('show');
+                }
+            });
+        });
+
+
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+
+    </script>
+}
