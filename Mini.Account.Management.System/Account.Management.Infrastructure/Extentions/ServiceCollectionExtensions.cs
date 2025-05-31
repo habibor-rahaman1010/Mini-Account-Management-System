@@ -51,6 +51,24 @@ namespace Account.Management.Infrastructure.Extentions
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireRole("Admin");
+                });
+
+                options.AddPolicy("Accountant", policy =>
+                {
+                    policy.RequireRole("Admin", "Accountant");
+                });
+
+                options.AddPolicy("Viewer", policy =>
+                {
+                    policy.RequireRole("Admin", "Accountant", "Viewer");
+                });
+            });
+
             return services;
         }
     }

@@ -151,6 +151,8 @@ namespace Account.Management.Web.Controllers.Account
 
 
         //--------Logout Code-----------
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<IActionResult> LogoutAsync(string returnUrl = null)
         {
@@ -160,11 +162,13 @@ namespace Account.Management.Web.Controllers.Account
             returnUrl ??= Url.Content("~/");
             TempData.Put("ResponseMessage", new ResponseModel
             {
-                Message = "The user loged out successfuly!",
+                Message = "The user logged out successfully!",
                 Type = ResponseTypes.Success
             });
+
             return LocalRedirect(returnUrl);
         }
+
 
         private async Task<bool> UserAlreadyExist(string email)
         {

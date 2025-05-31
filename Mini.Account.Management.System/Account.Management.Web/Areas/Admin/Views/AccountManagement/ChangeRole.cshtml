@@ -4,20 +4,8 @@
     ViewData["Title"] = "Change Role";
 }
 <!-- Content Header (Page header) -->
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Change Role</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Roles</a></li>
-                    <li class="breadcrumb-item active">Change Role</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
+<section class="container-fluid">
+    <partial name="_ResponsePartial" />
 </section>
 
 <!-- Main content -->
@@ -34,7 +22,6 @@
                     <!-- /.card-header -->
                     <!-- form start -->
                     <form asp-antiforgery="true" asp-area="Admin" asp-controller="AccountManagement" asp-action="ChangeRole" method="post" enctype="multipart/form-data">
-                        <partial name="_ResponsePartial" />
                         <div class="card-body">
                             <div class="form-group">
                                 <label asp-for="UserId"></label>
@@ -65,4 +52,12 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
 }
