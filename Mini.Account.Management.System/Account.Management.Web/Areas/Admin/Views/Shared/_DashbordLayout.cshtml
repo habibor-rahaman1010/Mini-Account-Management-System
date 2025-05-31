@@ -27,8 +27,7 @@
             </a>
             <div class="collapse" id="userMenu">
                 <a asp-controller="AccountManagement" asp-action="CreateRole" class="ps-4">Add User Roles</a>
-                <a href="/Users/List" class="ps-4">User List</a>
-                <a href="/Users/Create" class="ps-4">Add User</a>
+                <a asp-controller="AccountManagement" asp-action="GetUserList" class="ps-4">User List</a>
             </div>
 
             <a class="dropdown-toggle" data-bs-toggle="collapse" href="#reportMenu" role="button" aria-expanded="false" aria-controls="reportMenu">

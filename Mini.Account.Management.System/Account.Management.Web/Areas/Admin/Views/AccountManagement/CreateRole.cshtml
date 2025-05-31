@@ -5,6 +5,10 @@
 }
 
 <div>
+    <div class="container-fluid w-75 mb-3">
+        <partial name="_ResponsePartial" />
+    </div>
+
     <section class="content mt-3">
         <div class="container-fluid w-75">
             <div class="row">
@@ -43,5 +47,14 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @* <partial name="_ValidationScriptsPartial" /> *@
+
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
 }
