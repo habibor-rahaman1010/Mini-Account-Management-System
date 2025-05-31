@@ -57,6 +57,9 @@ namespace Account.Management.Web
 
                 builder.Services.AddIdentity();
 
+                //This service for automapper
+                builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
                 builder.Services.AddControllersWithViews();
 
                 var app = builder.Build();

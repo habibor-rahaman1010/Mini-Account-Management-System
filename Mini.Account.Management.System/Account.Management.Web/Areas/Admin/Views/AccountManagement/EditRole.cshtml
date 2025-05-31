@@ -1,0 +1,60 @@
+﻿@model RoleUpdateModel
+
+@{
+    ViewData["Title"] = "Create Role";
+}
+
+<div>
+    <div class="container-fluid w-75 mb-3">
+        <partial name="_ResponsePartial" />
+    </div>
+
+    <section class="content mt-3">
+        <div class="container-fluid w-75">
+            <div class="row">
+                <!-- left column -->
+                <div class="col">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Edit Role</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form method="post" asp-antiforgery="true" asp-area="Admin" asp-controller="AccountManagement" asp-action="EditRole" enctype="multipart/form-data">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="Name"></label>
+                                    <input type="text" asp-for="Name" class="form-control" placeholder="Role Name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+                <!--/.col (left) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+}

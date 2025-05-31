@@ -31,17 +31,15 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
 }
 
-<!-- Toast container -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
-    <div id="userToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body d-flex" id="toastMessage">
-            <!-- Toast message will be dynamically set here -->
-        </div>
-    </div>
-</div>
-
 <section class="content">
     <div class="container-fluid py-3">
+        <!-- Toast container -->
+        <div id="userToast" class="toast mb-3" style="z-index: 1100" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body d-flex" id="toastMessage">
+                <!-- Toast message will be dynamically set here -->
+            </div>
+        </div>
+        <partial name="_ResponsePartial" />
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">All Users</h2>
@@ -90,7 +88,7 @@
             </div>
             <div class="modal-footer">
                 <!-- The form that will be submitted when delete is confirmed -->
-                <form method="POST" id="applicableTaxForm" asp-antiforgery="true" , enctype="multipart/form-data">
+                <form method="POST" id="applicableTaxForm" asp-antiforgery="true" enctype="multipart/form-data">
                     <!-- Hidden input to store the ID of the item to be deleted -->
                     <input type="hidden" id="delete-id" name="id">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -121,8 +119,8 @@
                         // Map DataTables' "dir" to "Direction" for sorting
                         d.order = d.order.map(function (order) {
                             return {
-                                Column: order.column,         // Column index
-                                Direction: order.dir          // Convert "dir" to "Direction"
+                                Column: order.column,
+                                Direction: order.dir
                             };
                         });
                     }
@@ -173,7 +171,7 @@
                 let id = $("#delete-id").val();  // Get the ID from the hidden input
                 // Send the delete request via AJAX
                 $.ajax({
-                    url: '/Admin/AllUser/DeleteUser',
+                    url: '/Admin/AccountManagement/DeleteUser',
                     type: 'POST',
                     data: {
                         id: id,
@@ -223,12 +221,11 @@
             var userId = $(this).data('id');
 
             $.ajax({
-                url: '/Admin/AllUser/GetUserById',
+                url: '/Admin/AccountManagement/GetUserById',
                 method: 'GET',
                 data: { id: userId },
                 success: function (response) {
                     if (response.success) {
-                        // Populate user data
                         $('#updateUserId').val(response.data.id);
                         $('#editFirstName').val(response.data.firstName);
                         $('#editLastName').val(response.data.lastName);
@@ -252,7 +249,8 @@
 
                         // Show the update modal
                         $('#updateUserModal').modal('show');
-                    } else {
+                    } 
+                    else {
                         alert('Error fetching user data');
                     }
                 },
@@ -271,10 +269,8 @@
                 selectedRoles.push($(this).val());
             });
 
-            console.log(selectedRoles);
-
             $.ajax({
-                url: '/Admin/AllUser/UpdateUser',
+                url: '/Admin/AccountManagement/UpdateUser',
                 method: 'POST',
                 data: $(this).serializeArray(),
                 success: function (response) {
@@ -287,7 +283,8 @@
                         $('#userToast').toast('show');
 
                         $('#AllUsers').DataTable().ajax.reload();
-                    } else {
+                    } 
+                    else {
                         $('#toastMessage').text(response.message);
                         $('#userToast').toast({ delay: 3000 });
                         $('#userToast').toast('show');
