@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class AccountManagementController : Controller
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -37,17 +37,18 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateRole()
-        {          
+        {
             return View();
         }
 
         private async Task<bool> IsRoleHas(string roleName)
         {
-           return await _roleManager.RoleExistsAsync(roleName);
+            return await _roleManager.RoleExistsAsync(roleName);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize("Admin")]
         public async Task<IActionResult> CreateRole(RoleCreateModel model)
         {
             if (ModelState.IsValid)
@@ -85,17 +86,18 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
                     ModelState.Clear();
                     return View();
                 }
-            }        
+            }
             return View(model);
         }
 
         //Get all user list...
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public IActionResult GetUserList()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin, Accountant, Viewer")]
         public async Task<IActionResult> GetUserList(int draw, int start, int length, string search, List<Order> order)
         {
             var query = _userManager.Users.AsQueryable();
@@ -176,6 +178,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
         }
 
         //This mehtod get a user by id for update...
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -205,7 +208,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
         }
 
         //This is user update mehtod also user roles update code...
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(UserUpdateModel model, List<string> Roles)
         {
             if (ModelState.IsValid)
@@ -263,7 +266,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
 
 
         //This is delete user method...
-        [HttpPost]
+        [HttpPost, Authorize("Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
@@ -320,6 +323,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             }
         }
 
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public IActionResult RoleList(int page = 1, int pageSize = 10)
         {
             var rolesQuery = _roleManager.Roles.AsQueryable();
@@ -341,7 +345,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(model);
         }
 
-        
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -349,10 +353,10 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             {
                 return NotFound();
             }
-            return View(new RoleUpdateModel { Name = role.Name});
+            return View(new RoleUpdateModel { Name = role.Name });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize("Admin")]
         public async Task<IActionResult> EditRole(Guid id, RoleUpdateModel model)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -363,19 +367,20 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             role.Name = model.Name;
             role.NormalizedName = model.Name.ToUpper();
             role.ConcurrencyStamp = _applicationTime.GetCurrentTime().Ticks.ToString();
-            
+
             var result = await _roleManager.UpdateAsync(role);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 return RedirectToAction("RoleList", "AccountManagement");
             }
             return View(model);
         }
 
+        [Authorize("Admin")]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
-            if(role == null)
+            if (role == null)
             {
                 return NotFound();
             }
@@ -385,6 +390,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
         }
 
         //User Role Change method...
+        [Authorize(Roles = "Admin")]
         public IActionResult ChangeRole()
         {
             var model = new RoleChangeModel();
@@ -392,7 +398,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(model);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeRole(RoleChangeModel model)
         {
             if (ModelState.IsValid)

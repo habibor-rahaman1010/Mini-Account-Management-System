@@ -60,12 +60,12 @@ namespace Account.Management.Infrastructure.Extentions
 
                 options.AddPolicy("Accountant", policy =>
                 {
-                    policy.RequireRole("Admin", "Accountant");
+                    policy.RequireRole("Accountant");
                 });
 
                 options.AddPolicy("Viewer", policy =>
                 {
-                    policy.RequireRole("Admin", "Accountant", "Viewer");
+                    policy.RequireRole("Viewer");
                 });
             });
 

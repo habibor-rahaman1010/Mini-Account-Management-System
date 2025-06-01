@@ -9,6 +9,7 @@ using Account.Management.Web.Areas.Admin.Models;
 
 namespace Account.Management.Web.Controllers.Account
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -25,6 +26,7 @@ namespace Account.Management.Web.Controllers.Account
         }
 
         //--------Registration Code-----------
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterAsync(string returnUrl = null)
         {
             var model = new RegistrationModel();
@@ -178,6 +180,11 @@ namespace Account.Management.Web.Controllers.Account
                 return false;
             }
             return true;
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
