@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Account.Management.Infrastructure.Repositories
 {
@@ -22,13 +23,14 @@ namespace Account.Management.Infrastructure.Repositories
             _connectionString = _configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async Task CreateAsync(ChartOfAccount account)
+        public async Task CreateAsync(string action, ChartOfAccount account)
         {
             using(var connection = new SqlConnection(_connectionString))
             {
-                var command = new SqlCommand("sp_CreateChartOfAccount", connection);
+                var command = new SqlCommand("sp_ManageChartOfAccounts", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
+                command.Parameters.AddWithValue("@Action", action);
                 command.Parameters.AddWithValue("@Id", account.Id);
                 command.Parameters.AddWithValue("@AccountName", account.AccountName);
                 command.Parameters.AddWithValue("@Code", account.Code);

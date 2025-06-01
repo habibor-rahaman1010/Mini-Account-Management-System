@@ -1,6 +1,8 @@
 ﻿using Account.Management.Domain;
+using Account.Management.Domain.RepositoriesInterface;
 using Account.Management.Infrastructure.Account.Management.Identity;
 using Account.Management.Infrastructure.DbContexts;
+using Account.Management.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,7 @@ namespace Account.Management.Infrastructure.Extentions
             //Resolved here all service dependencies...
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, (m) => m.MigrationsAssembly(migrationAssembly)));
             services.AddScoped<IApplicationTime, ApplicationTime>();
+            services.AddScoped<IChartOfAccountRepository, ChartOfAccountRepository>();
 
             return services;
         }

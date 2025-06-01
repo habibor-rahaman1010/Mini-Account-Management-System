@@ -9,6 +9,6 @@ namespace Account.Management.Domain.RepositoriesInterface
 {
     public interface IChartOfAccountRepository
     {
-        public Task CreateAsync(ChartOfAccount account);
+        public Task CreateAsync(string action, ChartOfAccount account);
     }
 }

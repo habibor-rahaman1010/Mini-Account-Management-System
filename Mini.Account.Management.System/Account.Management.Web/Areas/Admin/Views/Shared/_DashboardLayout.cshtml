@@ -38,11 +38,10 @@
             </div>
 
             <a class="dropdown-toggle" data-bs-toggle="collapse" href="#reportMenu" role="button" aria-expanded="false" aria-controls="reportMenu">
-                Reports
+                Chart of Accounts
             </a>
             <div class="collapse" id="reportMenu">
-                <a href="/Reports/Daily" class="ps-4">Daily</a>
-                <a href="/Reports/Monthly" class="ps-4">Monthly</a>
+                <a asp-controller="ChartOfAccount" asp-action="AddChartOfAccount" class="ps-4">Add Account</a>
             </div>
 
             <a asp-controller="Dashboard" asp-action="Index">Settings</a>
