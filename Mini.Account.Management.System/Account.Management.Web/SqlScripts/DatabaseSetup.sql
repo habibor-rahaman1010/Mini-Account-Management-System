@@ -74,18 +74,19 @@ BEGIN
 END;
 
 
---Voucher Entry Module
+-- Voucher Entry Module Tables
+
 CREATE TABLE VoucherTypes (
-    VoucherTypeId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     TypeName NVARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Vouchers (
-    VoucherId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     VoucherDate DATE NOT NULL,
     ReferenceNo NVARCHAR(100),
     VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
-    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(VoucherTypeId)
+    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
 );
 
 CREATE TABLE VoucherEntries (
@@ -101,10 +102,10 @@ CREATE TABLE VoucherEntries (
 );
 GO
 
---VoucherTypes of stored procedure
+-- stored procedure of VoucherTypes
 CREATE PROCEDURE sp_CRUD_VoucherType
-    @Action NVARCHAR(10),               -- 'CREATE', 'READ', 'READBYID', 'UPDATE', 'DELETE'
-    @VoucherTypeId UNIQUEIDENTIFIER = NULL,
+    @Action NVARCHAR(10),
+    @Id UNIQUEIDENTIFIER = NULL,
     @TypeName NVARCHAR(50) = NULL
 AS
 BEGIN
@@ -112,34 +113,34 @@ BEGIN
 
     IF @Action = 'CREATE'
     BEGIN
-        INSERT INTO VoucherTypes (VoucherTypeId, TypeName)
+        INSERT INTO VoucherTypes (Id, TypeName)
         VALUES (NEWID(), @TypeName);
     END
 
     ELSE IF @Action = 'READ'
     BEGIN
-        SELECT VoucherTypeId, TypeName
+        SELECT Id, TypeName
         FROM VoucherTypes;
     END
 
     ELSE IF @Action = 'READBYID'
     BEGIN
-        SELECT VoucherTypeId, TypeName
+        SELECT Id, TypeName
         FROM VoucherTypes
-        WHERE VoucherTypeId = @VoucherTypeId;
+        WHERE Id = @Id;
     END
 
     ELSE IF @Action = 'UPDATE'
     BEGIN
         UPDATE VoucherTypes
         SET TypeName = @TypeName
-        WHERE VoucherTypeId = @VoucherTypeId;
+        WHERE Id = @Id;
     END
 
     ELSE IF @Action = 'DELETE'
     BEGIN
         DELETE FROM VoucherTypes
-        WHERE VoucherTypeId = @VoucherTypeId;
+        WHERE Id = @Id;
     END
 END;
 GO
