@@ -9,6 +9,10 @@ CREATE TABLE ChartOfAccounts (
     ParentId UNIQUEIDENTIFIER NULL,
     CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
     ModifiedDate DATETIME NULL
+
+    CONSTRAINT FK_ChartOfAccounts_ParentId
+        FOREIGN KEY (ParentId)
+        REFERENCES ChartOfAccounts(Id)
 );
 GO
 
@@ -68,3 +72,74 @@ BEGIN
         DELETE FROM ChartOfAccounts WHERE Id = @Id;
     END
 END;
+
+
+--Voucher Entry Module
+CREATE TABLE VoucherTypes (
+    VoucherTypeId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    TypeName NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Vouchers (
+    VoucherId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    VoucherDate DATE NOT NULL,
+    ReferenceNo NVARCHAR(100),
+    VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
+    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(VoucherTypeId)
+);
+
+CREATE TABLE VoucherEntries (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    VoucherId UNIQUEIDENTIFIER NOT NULL,
+    AccountId UNIQUEIDENTIFIER NOT NULL, -- ChartOfAccounts.Id
+    DebitAmount DECIMAL(18, 2) DEFAULT 0,
+    CreditAmount DECIMAL(18, 2) DEFAULT 0,
+    Narration NVARCHAR(255),
+
+    FOREIGN KEY (VoucherId) REFERENCES Vouchers(Id),
+    FOREIGN KEY (AccountId) REFERENCES ChartOfAccounts(Id)
+);
+GO
+
+--VoucherTypes of stored procedure
+CREATE PROCEDURE sp_CRUD_VoucherType
+    @Action NVARCHAR(10),               -- 'CREATE', 'READ', 'READBYID', 'UPDATE', 'DELETE'
+    @VoucherTypeId UNIQUEIDENTIFIER = NULL,
+    @TypeName NVARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @Action = 'CREATE'
+    BEGIN
+        INSERT INTO VoucherTypes (VoucherTypeId, TypeName)
+        VALUES (NEWID(), @TypeName);
+    END
+
+    ELSE IF @Action = 'READ'
+    BEGIN
+        SELECT VoucherTypeId, TypeName
+        FROM VoucherTypes;
+    END
+
+    ELSE IF @Action = 'READBYID'
+    BEGIN
+        SELECT VoucherTypeId, TypeName
+        FROM VoucherTypes
+        WHERE VoucherTypeId = @VoucherTypeId;
+    END
+
+    ELSE IF @Action = 'UPDATE'
+    BEGIN
+        UPDATE VoucherTypes
+        SET TypeName = @TypeName
+        WHERE VoucherTypeId = @VoucherTypeId;
+    END
+
+    ELSE IF @Action = 'DELETE'
+    BEGIN
+        DELETE FROM VoucherTypes
+        WHERE VoucherTypeId = @VoucherTypeId;
+    END
+END;
+GO

@@ -1,8 +1,9 @@
-﻿@model ChartOfAccountModel
+﻿@model ChartOfAccountUpdateDto
 
 @{
-    ViewData["Title"] = "Add Chart Account";
+    ViewData["Title"] = "Update Chart Account";
 }
+
 
 <!-- Content Header (Page header) -->
 <section class="container-fluid">
@@ -18,11 +19,11 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Chart Of Account</h3>
+                        <h3 class="card-title">Update Chart Of Account</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form asp-antiforgery="true" asp-area="Admin" asp-controller="ChartOfAccount" asp-action="AddChartOfAccount" method="post" enctype="multipart/form-data">
+                    <form asp-antiforgery="true" asp-area="Admin" asp-controller="ChartOfAccount" asp-action="UpdateChartOfAccount" method="post" enctype="multipart/form-data">
                         <div class="card-body">
                             <div class="form-group">
                                 <label asp-for="AccountName"></label>
@@ -51,14 +52,7 @@
                             <div class="form-group">
                                 <label asp-for="IsActive"></label>
                                 <input asp-for="IsActive" type="checkbox" class="form-check-input mx-2" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="ParentId"></label>
-                                <input asp-for="ParentId" class="form-control" />
-                                <span asp-validation-for="ParentId" class="text-danger"></span>
-                            </div>
-
+                            </div>                          
                         </div>
 
                         <div class="card-footer">

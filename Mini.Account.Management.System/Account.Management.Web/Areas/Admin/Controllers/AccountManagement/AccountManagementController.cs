@@ -324,7 +324,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
         }
 
         [Authorize(Roles = "Admin, Accountant, Viewer")]
-        public IActionResult RoleList(int page = 1, int pageSize = 10)
+        public IActionResult RoleList(int page = 1, int pageSize = 2)
         {
             var rolesQuery = _roleManager.Roles.AsQueryable();
             int totalRoles = rolesQuery.Count();
