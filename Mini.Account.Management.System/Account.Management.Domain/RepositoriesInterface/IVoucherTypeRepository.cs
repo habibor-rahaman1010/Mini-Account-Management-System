@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Account.Management.Domain.RepositoriesInterface
 {
-    public interface IVoucherTypesRepository
+    public interface IVoucherTypeRepository
     {
-        public Task CreateAsync(string action, ChartOfAccount account);
+        public Task CreateAsync(string action, VoucherType voucherType);
+        public Task<(IList<VoucherType>, int)> GetAllAsync(string action, int pageNumber, int pageSize);
     }
 }

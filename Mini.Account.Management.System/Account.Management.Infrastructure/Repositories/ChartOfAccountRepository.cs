@@ -69,6 +69,7 @@ namespace Account.Management.Infrastructure.Repositories
                                 ModifiedDate = reader.IsDBNull(reader.GetOrdinal("ModifiedDate")) ? null : reader.GetDateTime(reader.GetOrdinal("ModifiedDate"))
                             };
                         }
+                        await reader.CloseAsync();
                     }
                 }
             }
@@ -80,10 +81,10 @@ namespace Account.Management.Infrastructure.Repositories
             var list = new List<ChartOfAccountDto>();
 
             string countQuery = "SELECT COUNT(*) FROM ChartOfAccounts";
-            var conn = new SqlConnection(_connectionString);
+            using var conn = new SqlConnection(_connectionString);
             await conn.OpenAsync();
-            var countCommand = new SqlCommand(countQuery, conn);
-            int totalCount = (int)await countCommand.ExecuteScalarAsync();
+            using var countCommand = new SqlCommand(countQuery, conn);
+            int totalCount = (int) await countCommand.ExecuteScalarAsync();
 
             using (var connection = new SqlConnection(_connectionString))
             {

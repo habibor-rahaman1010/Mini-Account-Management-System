@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Account.Management.Domain.Entities
+namespace Account.Management.Domain.Dtos
 {
-    public class VoucherType
+    public class VoucherTypeDto
     {
         public Guid Id { get; set; }
         public string TypeName { get; set; }

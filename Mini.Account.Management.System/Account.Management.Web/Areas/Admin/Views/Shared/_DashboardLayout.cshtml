@@ -45,7 +45,14 @@
                 <a asp-controller="ChartOfAccount" asp-action="ChartOfAccountList" class="ps-4">Account List</a>
             </div>
 
-            <a asp-controller="Dashboard" asp-action="Index">Settings</a>
+            <a class="dropdown-toggle" data-bs-toggle="collapse" href="#voucherMenu" role="button" aria-expanded="false" aria-controls="voucherMenu">
+                Voucher Entry Module
+            </a>
+            <div class="collapse" id="voucherMenu">            
+                <a asp-controller="VoucherType" asp-action="VoucherTypeList" class="ps-4">Voucher Type List</a>
+                <a asp-controller="VoucherType" asp-action="CreateVoucherType" class="ps-4">Add Voucher Type</a>
+                <a asp-controller="ChartOfAccount" asp-action="ChartOfAccountList" class="ps-4">Account List</a>
+            </div>
         </div>
 
         <div class="mx-3 mt-3 w-100">

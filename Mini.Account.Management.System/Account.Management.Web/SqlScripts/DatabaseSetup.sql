@@ -103,10 +103,13 @@ CREATE TABLE VoucherEntries (
 GO
 
 -- stored procedure of VoucherTypes
-CREATE PROCEDURE sp_CRUD_VoucherType
+ALTER PROCEDURE sp_Manage_VoucherType
     @Action NVARCHAR(10),
     @Id UNIQUEIDENTIFIER = NULL,
-    @TypeName NVARCHAR(50) = NULL
+    @TypeName NVARCHAR(50) = NULL,
+    @PageNumber INT = NULL,
+    @PageSize INT = NULL,
+    @TotalCount INT = NULL OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -114,13 +117,22 @@ BEGIN
     IF @Action = 'CREATE'
     BEGIN
         INSERT INTO VoucherTypes (Id, TypeName)
-        VALUES (NEWID(), @TypeName);
+        VALUES (@Id, @TypeName);
     END
 
     ELSE IF @Action = 'READ'
     BEGIN
+        -- Total Count ber kora
+        SELECT @TotalCount = COUNT(*) FROM VoucherTypes;
+
+        -- Pagination apply kore data fetch
+        DECLARE @StartRow INT = (@PageNumber - 1) * @PageSize;
+
         SELECT Id, TypeName
-        FROM VoucherTypes;
+        FROM VoucherTypes
+        ORDER BY TypeName
+        OFFSET @StartRow ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
     END
 
     ELSE IF @Action = 'READBYID'

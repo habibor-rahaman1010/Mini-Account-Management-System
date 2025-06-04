@@ -14,6 +14,8 @@ namespace Account.Management.Web.AutoMapperProfile
             CreateMap<ChartOfAccountModel, ChartOfAccount>().ReverseMap();
             CreateMap<ChartOfAccountUpdate, ChartOfAccountUpdateDto>().ReverseMap();
             CreateMap<ChartOfAccountDto, ChartOfAccountUpdateDto>().ReverseMap();
+            CreateMap<VoucherTypeModel, VoucherType>().ReverseMap();
+            CreateMap<VoucherType, VoucherTypeDto>().ReverseMap();
         }
     }
 }

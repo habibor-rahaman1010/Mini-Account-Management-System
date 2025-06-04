@@ -49,20 +49,20 @@
         <ul class="pagination">
             <!-- Previous Button -->
             <li class="page-item @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-controller="ChartOfAccount" asp-action="GetAllChartOfAccounts" asp-route-page="@(Model.Pager.CurrentPage - 1)">Previous</a>
+                <a class="page-link" asp-controller="ChartOfAccount" asp-action="ChartOfAccountList" asp-route-page="@(Model.Pager.CurrentPage - 1)">Previous</a>
             </li>
 
             <!-- Page Numbers -->
             @for (int i = 1; i <= Model.Pager.TotalPages; i++)
             {
                 <li class="page-item @(i == Model.Pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-controller="ChartOfAccount" asp-action="GetAllChartOfAccounts" asp-route-page="@i">@i</a>
+                    <a class="page-link" asp-controller="ChartOfAccount" asp-action="ChartOfAccountList" asp-route-page="@i">@i</a>
                 </li>
             }
 
             <!-- Next Button -->
             <li class="page-item @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-controller="ChartOfAccount" asp-action="GetAllChartOfAccounts" asp-route-page="@(Model.Pager.CurrentPage + 1)">Next</a>
+                <a class="page-link" asp-controller="ChartOfAccount" asp-action="ChartOfAccountList" asp-route-page="@(Model.Pager.CurrentPage + 1)">Next</a>
             </li>
         </ul>
     </nav>

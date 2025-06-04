@@ -1,5 +1,7 @@
-﻿using Account.Management.Domain;
+﻿using Account.Management.Application.Services;
+using Account.Management.Domain;
 using Account.Management.Domain.RepositoriesInterface;
+using Account.Management.Domain.ServicesInterface;
 using Account.Management.Infrastructure.Account.Management.Identity;
 using Account.Management.Infrastructure.DbContexts;
 using Account.Management.Infrastructure.Repositories;
@@ -18,6 +20,8 @@ namespace Account.Management.Infrastructure.Extentions
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, (m) => m.MigrationsAssembly(migrationAssembly)));
             services.AddScoped<IApplicationTime, ApplicationTime>();
             services.AddScoped<IChartOfAccountRepository, ChartOfAccountRepository>();
+            services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
+            services.AddScoped<IVoucherTypeManagementService, VoucherTypeManagementService>();
 
             return services;
         }
