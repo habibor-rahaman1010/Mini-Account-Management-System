@@ -1,5 +1,6 @@
 using Account.Management.Infrastructure.DbContexts;
 using Account.Management.Infrastructure.Extentions;
+using Account.Management.Infrastructure.IdentitySeeder;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -91,7 +92,9 @@ namespace Account.Management.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}")
                     .WithStaticAssets();
-              
+
+                await app.SeedInitialDataAsync();
+
                 await app.RunAsync();
             }
             catch (Exception ex)
