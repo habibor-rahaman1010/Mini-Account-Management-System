@@ -5,7 +5,7 @@ namespace Account.Management.Web.Areas.Admin.Models
 {
     public class RoleListViewModel
     {
-        public IEnumerable<ApplicationRole> Roles { get; set; }
-        public Pager Pager { get; set; }
+        public IEnumerable<ApplicationRole>? Roles { get; set; }
+        public Pager? Pager { get; set; }
     }
 }

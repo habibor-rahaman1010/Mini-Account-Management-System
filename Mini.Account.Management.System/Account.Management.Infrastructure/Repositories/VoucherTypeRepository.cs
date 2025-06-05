@@ -75,5 +75,66 @@ namespace Account.Management.Infrastructure.Repositories
             }
             return (voucherTypeList, totalCount);
         }
+
+        public async Task<VoucherType> GetByIdAsync(string action, Guid id)
+        {
+            VoucherType voucherType = null;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_Manage_VoucherTypes", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue(@"Action", action);
+                    command.Parameters.AddWithValue(@"Id", id);
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            voucherType = new VoucherType
+                            {
+                                Id = reader.GetGuid("Id"),
+                                TypeName = reader.GetString(reader.GetOrdinal("TypeName"))
+                            };
+                        }
+                    }
+                    await connection.CloseAsync();
+                }
+            }
+            return voucherType;
+        }
+
+        public async Task UpdateAsync(string action, Guid id, VoucherType voucherType)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_Manage_VoucherTypes", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue(@"Action", action);
+                    command.Parameters.AddWithValue(@"Id", id);
+                    command.Parameters.AddWithValue(@"TypeName", voucherType.TypeName ?? (object)DBNull.Value);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task DeleteAsync(string action, Guid id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("sp_Manage_VoucherTypes", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", action);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
     }
 }
