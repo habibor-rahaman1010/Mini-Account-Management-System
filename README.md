@@ -29,8 +29,8 @@ That’s it—run the project and navigate using the navigation bar on the first
 
 | Role | Username | Password | Can Access |
 |------|----------|----------|------------|
-| **Admin** | `admin@gmail.com` | `Pass@123` | **AddUser**, **AddRole**, **AssignAccess**, **AssignUserRole** |
-| **Accountant** | `accountant@gmail.com` | `Pass@123` | **ChartOfAccounts**, **VoucherList** |
+| **Admin** | `user.admin@gmail.com` | `admin123` | **AddUser**, **AddRole**, **AssignAccess**, **AssignUserRole** |
+| **Accountant** | `user.accountant@gmail.com` | `accountant123` | **ChartOfAccounts**, **VoucherList** |
 | **Viewer** | Any self-registered user | *(chosen at signup)* | VoucherList |
 
 Newly registered users are automatically placed in the **Viewer** role.

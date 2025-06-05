@@ -14,7 +14,8 @@ namespace Account.Management.Infrastructure.Extentions
             {
                 await RoleSeeder.SeedRolesAsync(services);
 
-                await UserSeeder.SeedAdminUserAsync(services);
+                await UserSeeder.SeedAdminUserAsync(services, "user.admin@gmail.com", "admin123", "Admin");
+                await UserSeeder.SeedAdminUserAsync(services, "user.accountant@gmail.com", "accountant123", "Accountant");
             }
             catch (Exception ex)
             {
