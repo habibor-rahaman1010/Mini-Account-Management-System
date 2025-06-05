@@ -35,8 +35,56 @@ That’s it—run the project and navigate using the navigation bar on the first
 
 Newly registered users are automatically placed in the **Viewer** role.
 
-### 1. Landing Page  
+### 1. Registration Page  
 ![Landing Page](ScreenShots/Screenshot-1.png)
 
-### 2. Login As Admin  
-![Login As Admin](ScreenShots/Screenshot-2.png)
+### 2. Validation Registration Page  
+![Landing Page](ScreenShots/Screenshot-2.png)
+
+### 1. Login Page  
+![Landing Page](ScreenShots/Screenshot-3.png)
+
+### 1. Validation Login Page  
+![Landing Page](ScreenShots/Screenshot-4.png)
+
+### 1. After Login Home page  
+![Landing Page](ScreenShots/Screenshot-5.png)
+
+### 1. Dashboard Page  
+![Landing Page](ScreenShots/Screenshot-6.png)
+
+### 1. Users List  
+![Landing Page](ScreenShots/Screenshot-7.png)
+
+### 1. user Edit  
+![Landing Page](ScreenShots/Screenshot-8.png)
+
+### 1. User Delete  
+![Landing Page](ScreenShots/Screenshot-9.png)
+
+### 1. Role Create Page  
+![Landing Page](ScreenShots/Screenshot-10.png)
+
+### 1. Role List  
+![Landing Page](ScreenShots/Screenshot-11.png)
+
+### 1. Edit Role  
+![Landing Page](ScreenShots/Screenshot-12.png)
+
+### 1. Change User Role 
+![Landing Page](ScreenShots/Screenshot-13.png)
+
+### 1. Create Chart Of Account  
+![Landing Page](ScreenShots/Screenshot-14.png)
+
+### 1. Chart Of Account  
+![Landing Page](ScreenShots/Screenshot-15.png)
+
+### 1. Update Chart Of Account  
+![Landing Page](ScreenShots/Screenshot-16.png)
+
+### 1. Voucher Type List
+![Landing Page](ScreenShots/Screenshot-17.png)
+
+### 1. Create Voucher Type  
+![Landing Page](ScreenShots/Screenshot-18.png)
