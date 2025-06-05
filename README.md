@@ -36,7 +36,7 @@ That’s it—run the project and navigate using the navigation bar on the first
 Newly registered users are automatically placed in the **Viewer** role.
 
 ### 1. Landing Page  
-![Landing Page](ScreenShots/01-LandingPage.png)
+![Landing Page](ScreenShots/Screenshot-1.png)
 
 ### 2. Login As Admin  
-![Login As Admin](ScreenShots/02-LoginAsAdmin.png)
+![Login As Admin](ScreenShots/Screenshot-2.png)
