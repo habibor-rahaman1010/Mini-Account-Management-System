@@ -7,7 +7,6 @@ namespace Account.Management.Web.Areas.Admin.Models
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Voucher date is required.")]
-        [DataType(DataType.Date)]
         [Display(Name = "Voucher Date")]
         public DateTime VoucherDate { get; set; }
 

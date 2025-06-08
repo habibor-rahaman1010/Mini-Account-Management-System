@@ -1,11 +1,6 @@
 ﻿using Account.Management.Domain.Entities;
 using Account.Management.Domain.RepositoriesInterface;
 using Account.Management.Domain.ServicesInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Account.Management.Application.Services
 {
@@ -21,6 +16,11 @@ namespace Account.Management.Application.Services
         public async Task CreateVoucher(string action, Voucher voucher)
         {
             await _voucherRepository.CreateAsync(action, voucher);
+        }
+
+        public Task<(IList<Voucher> voucherTypes, int totalCount)> GetVouchers(string action, int pageNumber, int pageSize)
+        {
+            return _voucherRepository.GetAllAsync(action, pageNumber, pageSize);
         }
     }
 }

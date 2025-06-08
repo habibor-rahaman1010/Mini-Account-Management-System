@@ -83,7 +83,7 @@ CREATE TABLE VoucherTypes (
 
 CREATE TABLE Vouchers (
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    VoucherDate DATE NOT NULL,
+    VoucherDate DATETIME NOT NULL,
     ReferenceNo NVARCHAR(100),
     VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
     FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
@@ -163,7 +163,10 @@ CREATE PROCEDURE sp_ManageVouchers
     @Id UNIQUEIDENTIFIER = NULL,
     @VoucherDate DATE = NULL,
     @ReferenceNo NVARCHAR(100) = NULL,
-    @VoucherTypeId UNIQUEIDENTIFIER = NULL
+    @VoucherTypeId UNIQUEIDENTIFIER = NULL,
+    @PageNumber INT = NULL,
+    @PageSize INT = NULL,
+    @TotalCount INT = NULL OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -175,17 +178,24 @@ BEGIN
         VALUES (NEWID(), @VoucherDate, @ReferenceNo, @VoucherTypeId);
     END
 
-    -- READ ALL
+    -- READ ALL WITH PAGINATION
     ELSE IF UPPER(@Action) = 'READ'
     BEGIN
+        -- Set total count first
+        SELECT @TotalCount = COUNT(*)
+        FROM Vouchers;
+
+        -- Apply pagination
         SELECT 
             V.Id,
             V.VoucherDate,
             V.ReferenceNo,
-            V.VoucherTypeId,
             VT.TypeName
         FROM Vouchers V
-        INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id;
+        INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id
+        ORDER BY V.VoucherDate DESC
+        OFFSET (@PageNumber - 1) * @PageSize ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
     END
 
     -- READ BY ID
@@ -195,7 +205,6 @@ BEGIN
             V.Id,
             V.VoucherDate,
             V.ReferenceNo,
-            V.VoucherTypeId,
             VT.TypeName
         FROM Vouchers V
         INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id

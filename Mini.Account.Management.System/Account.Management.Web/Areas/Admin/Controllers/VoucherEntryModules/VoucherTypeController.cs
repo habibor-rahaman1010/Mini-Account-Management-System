@@ -31,7 +31,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 
             var pager = new Pager(totalCount, pageNumber, pageSize);
 
-            var model = new VoucherListViewModel()
+            var model = new VoucherTypeListViewModel()
             {
                 VoucherTypes = _mapper.Map<IList<VoucherTypeDto>>(voucherTypes),
                 Pager = pager
