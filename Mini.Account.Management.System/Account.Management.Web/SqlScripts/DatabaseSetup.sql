@@ -156,3 +156,68 @@ BEGIN
     END
 END;
 GO
+
+-- stored procedure of Vouchers
+CREATE PROCEDURE sp_ManageVouchers
+    @Action NVARCHAR(10),
+    @Id UNIQUEIDENTIFIER = NULL,
+    @VoucherDate DATE = NULL,
+    @ReferenceNo NVARCHAR(100) = NULL,
+    @VoucherTypeId UNIQUEIDENTIFIER = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- CREATE
+    IF UPPER(@Action) = 'CREATE'
+    BEGIN
+        INSERT INTO Vouchers (Id, VoucherDate, ReferenceNo, VoucherTypeId)
+        VALUES (NEWID(), @VoucherDate, @ReferenceNo, @VoucherTypeId);
+    END
+
+    -- READ ALL
+    ELSE IF UPPER(@Action) = 'READ'
+    BEGIN
+        SELECT 
+            V.Id,
+            V.VoucherDate,
+            V.ReferenceNo,
+            V.VoucherTypeId,
+            VT.TypeName
+        FROM Vouchers V
+        INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id;
+    END
+
+    -- READ BY ID
+    ELSE IF UPPER(@Action) = 'READBYID'
+    BEGIN
+        SELECT 
+            V.Id,
+            V.VoucherDate,
+            V.ReferenceNo,
+            V.VoucherTypeId,
+            VT.TypeName
+        FROM Vouchers V
+        INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id
+        WHERE V.Id = @Id;
+    END
+
+    -- UPDATE
+    ELSE IF UPPER(@Action) = 'UPDATE'
+    BEGIN
+        UPDATE Vouchers
+        SET 
+            VoucherDate = ISNULL(@VoucherDate, VoucherDate),
+            ReferenceNo = ISNULL(@ReferenceNo, ReferenceNo),
+            VoucherTypeId = ISNULL(@VoucherTypeId, VoucherTypeId)
+        WHERE Id = @Id;
+    END
+
+    -- DELETE
+    ELSE IF UPPER(@Action) = 'DELETE'
+    BEGIN
+        DELETE FROM Vouchers WHERE Id = @Id;
+    END
+END
+GO
+

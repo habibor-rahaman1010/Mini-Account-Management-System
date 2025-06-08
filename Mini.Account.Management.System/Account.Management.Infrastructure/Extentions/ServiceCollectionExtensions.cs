@@ -22,6 +22,8 @@ namespace Account.Management.Infrastructure.Extentions
             services.AddScoped<IChartOfAccountRepository, ChartOfAccountRepository>();
             services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
             services.AddScoped<IVoucherTypeManagementService, VoucherTypeManagementService>();
+            services.AddScoped<IVoucherRepository, VoucherRepository>();
+            services.AddScoped<IVoucherManagementService, VoucherManagementService>();
 
             return services;
         }
