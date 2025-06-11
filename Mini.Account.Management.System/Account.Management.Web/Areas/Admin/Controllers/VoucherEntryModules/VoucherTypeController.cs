@@ -64,11 +64,11 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             {
                 return NotFound("The voucher type not found");
             }
-            return View(_mapper.Map<VoucherUpdateModel>(existVoucherType));
+            return View(_mapper.Map<VoucherTypeUpdateModel>(existVoucherType));
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditVoucherType(Guid id, VoucherUpdateModel model)
+        public async Task<IActionResult> EditVoucherType(Guid id, VoucherTypeUpdateModel model)
         {
             var existVoucherType = await _voucherTypeManagementService.GetVoucherTypeById("READBYID", id);
             if (existVoucherType == null)

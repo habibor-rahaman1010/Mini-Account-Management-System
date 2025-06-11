@@ -1,5 +1,4 @@
-﻿using Account.Management.Application.Services;
-using Account.Management.Domain.Dtos;
+﻿using Account.Management.Domain.Dtos;
 using Account.Management.Domain.Entities;
 using Account.Management.Domain.ServicesInterface;
 using Account.Management.Web.Areas.Admin.Models;
@@ -68,7 +67,41 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
-        private async Task<SelectList> GetVoucherTypeSelectList()
+        public async Task<IActionResult> EditVoucher(Guid id)
+        {
+            var existVoucher = await _voucherManagementService.GetVoucherById("READBYID", id);
+            if (existVoucher == null)
+            {
+                return NotFound("Voucher not found!");
+            }
+
+            var updateModel = _mapper.Map<VoucherUpdateModel>(existVoucher);
+            ViewBag.VoucherTypes = await GetVoucherTypeSelectList(updateModel.VoucherTypeId);
+            return View(updateModel);
+        }
+
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVoucher(Guid id, VoucherUpdateModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.VoucherTypes = await GetVoucherTypeSelectList(model.VoucherTypeId);
+                return View(model);
+            }
+
+            var existVoucher = await _voucherManagementService.GetVoucherById("READBYID", id);
+            if (existVoucher == null)
+            {
+                return NotFound("Voucher not found!");
+            }
+
+            var updateVoucher = _mapper.Map(model, existVoucher);
+            await _voucherManagementService.UpdateVoucher("UPDATE", id, updateVoucher);
+            return RedirectToAction("VoucherList", "Voucher");
+        }
+
+        private async Task<SelectList> GetVoucherTypeSelectList(Guid? selectedValue = null)
         {
             var list = new List<SelectListItem>();
 
@@ -78,18 +111,23 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
                 await connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
+                        var id = reader["Id"].ToString();
+                        var typeName = reader["TypeName"].ToString();
+
                         list.Add(new SelectListItem
                         {
-                            Value = reader["Id"].ToString(),
-                            Text = reader["TypeName"].ToString()
+                            Value = id,
+                            Text = typeName,
+                            Selected = selectedValue.HasValue && id == selectedValue.Value.ToString()
                         });
                     }
                 }
                 await connection.CloseAsync();
             }
-            return new SelectList(list, "Value", "Text");
+
+            return new SelectList(list, "Value", "Text", selectedValue?.ToString());
         }
     }
 }

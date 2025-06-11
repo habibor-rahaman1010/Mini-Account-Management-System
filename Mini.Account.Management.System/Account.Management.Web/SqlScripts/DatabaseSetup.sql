@@ -198,18 +198,20 @@ BEGIN
         FETCH NEXT @PageSize ROWS ONLY;
     END
 
-    -- READ BY ID
+     -- READ BY ID
     ELSE IF UPPER(@Action) = 'READBYID'
     BEGIN
         SELECT 
             V.Id,
             V.VoucherDate,
             V.ReferenceNo,
+            V.VoucherTypeId,
             VT.TypeName
         FROM Vouchers V
         INNER JOIN VoucherTypes VT ON V.VoucherTypeId = VT.Id
         WHERE V.Id = @Id;
     END
+
 
     -- UPDATE
     ELSE IF UPPER(@Action) = 'UPDATE'
@@ -229,4 +231,3 @@ BEGIN
     END
 END
 GO
-

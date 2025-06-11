@@ -22,5 +22,15 @@ namespace Account.Management.Application.Services
         {
             return _voucherRepository.GetAllAsync(action, pageNumber, pageSize);
         }
+
+        public async Task<Voucher> GetVoucherById(string action, Guid id)
+        {
+            return await _voucherRepository.GetByIdAsync(action, id);
+        }
+
+        public async Task UpdateVoucher(string action, Guid id, Voucher voucher)
+        {
+            await _voucherRepository.UpdateAsync(action, id, voucher);
+        }
     }
 }

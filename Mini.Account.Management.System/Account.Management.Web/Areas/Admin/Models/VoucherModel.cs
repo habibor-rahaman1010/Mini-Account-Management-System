@@ -13,7 +13,7 @@ namespace Account.Management.Web.Areas.Admin.Models
         [Required(ErrorMessage = "Reference number is required.")]
         [StringLength(100)]
         [Display(Name = "Reference No")]
-        public string ReferenceNo { get; set; }
+        public string ReferenceNo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Voucher type is required.")]
         [Display(Name = "Voucher Type")]

@@ -76,5 +76,60 @@ namespace Account.Management.Infrastructure.Repositories
             }
             return (voucherList, totalCount);
         }
+
+        public async Task<Voucher> GetByIdAsync(string action, Guid id)
+        {
+            Voucher voucher = null;
+
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("sp_ManageVouchers", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Action", action);
+                command.Parameters.AddWithValue("@Id", id);
+
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        voucher = new Voucher
+                        {
+                            Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                            VoucherDate = reader.GetDateTime(reader.GetOrdinal("VoucherDate")),
+                            ReferenceNo = reader.GetString(reader.GetOrdinal("ReferenceNo")),
+                            VoucherTypeId = reader.GetGuid(reader.GetOrdinal("VoucherTypeId")),
+                            VoucherTypeName = reader.GetString(reader.GetOrdinal("TypeName"))
+                        };
+                    }
+                }
+
+                await connection.CloseAsync();
+            }
+
+            return voucher;
+        }
+
+        public async Task UpdateAsync(string action, Guid id, Voucher voucher)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("sp_ManageVouchers", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Add required parameters
+                command.Parameters.AddWithValue("@Action", action);
+                command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@VoucherDate", voucher.VoucherDate);
+                command.Parameters.AddWithValue("@ReferenceNo", string.IsNullOrEmpty(voucher.ReferenceNo) ? DBNull.Value : voucher.ReferenceNo);
+                command.Parameters.AddWithValue("@VoucherTypeId", voucher.VoucherTypeId);
+
+                await connection.OpenAsync();
+                await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+            }
+        }
     }
 }

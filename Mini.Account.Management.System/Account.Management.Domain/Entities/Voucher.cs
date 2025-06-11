@@ -10,9 +10,9 @@ namespace Account.Management.Domain.Entities
     {
         public Guid Id { get; set; }
         public DateTime VoucherDate { get; set; }
-        public string ReferenceNo { get; set; }
+        public string ReferenceNo { get; set; } = string.Empty;
 
         public Guid VoucherTypeId { get; set; }
-        public string VoucherTypeName { get; set; }
+        public string VoucherTypeName { get; set; } = string.Empty ;
     }
 }
