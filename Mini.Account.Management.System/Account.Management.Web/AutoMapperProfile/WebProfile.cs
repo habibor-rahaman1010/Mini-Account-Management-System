@@ -20,7 +20,7 @@ namespace Account.Management.Web.AutoMapperProfile
             CreateMap<VoucherModel, Voucher>().ReverseMap();
             CreateMap<Voucher, VoucherDto>().ReverseMap();
             CreateMap<Voucher, VoucherUpdateModel>().ReverseMap();
-
+            CreateMap<VoucherEntryCreateModel, VoucherEntry>().ReverseMap();
         }
     }
 }

@@ -92,14 +92,17 @@ CREATE TABLE Vouchers (
 
 CREATE TABLE VoucherEntries (
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    VoucherId UNIQUEIDENTIFIER NOT NULL,
-    AccountId UNIQUEIDENTIFIER NOT NULL, -- ChartOfAccounts.Id
     DebitAmount DECIMAL(18, 2) DEFAULT 0,
     CreditAmount DECIMAL(18, 2) DEFAULT 0,
     Narration NVARCHAR(255),
+    ReferenceNo NVARCHAR(100),
+    VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
+    AccountId UNIQUEIDENTIFIER NOT NULL, -- ChartOfAccounts.Id
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedDate DATETIME NULL,
 
-    FOREIGN KEY (VoucherId) REFERENCES Vouchers(Id),
-    FOREIGN KEY (AccountId) REFERENCES ChartOfAccounts(Id)
+    FOREIGN KEY (AccountId) REFERENCES ChartOfAccounts(Id),
+    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
 );
 GO
 
@@ -233,6 +236,108 @@ BEGIN
     ELSE IF UPPER(@Action) = 'DELETE'
     BEGIN
         DELETE FROM Vouchers WHERE Id = @Id;
+    END
+END
+GO
+
+
+
+
+
+
+-- stored procedure of Vouchers Entries
+CREATE OR ALTER PROCEDURE sp_ManageVoucherEntries
+    @Action NVARCHAR(20),
+    @Id UNIQUEIDENTIFIER = NULL,
+    @VoucherTypeId UNIQUEIDENTIFIER = NULL,
+    @AccountId UNIQUEIDENTIFIER = NULL,
+    @DebitAmount DECIMAL(18, 2) = 0,
+    @CreditAmount DECIMAL(18, 2) = 0,
+    @Narration NVARCHAR(255) = NULL,
+    @ReferenceNo NVARCHAR(100) = NULL,
+    @CreatedDate DATETIME = NULL,
+    @ModifiedDate DATETIME = NULL,
+    @PageNumber INT = NULL,
+    @PageSize INT = NULL,
+    @TotalCount INT = NULL OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- CREATE
+    IF UPPER(@Action) = 'CREATE'
+    BEGIN
+        INSERT INTO VoucherEntries 
+        (Id, VoucherTypeId, AccountId, DebitAmount, CreditAmount, Narration, ReferenceNo, CreatedDate)
+        VALUES 
+        (NEWID(), @VoucherTypeId, @AccountId, @DebitAmount, @CreditAmount, @Narration, @ReferenceNo, ISNULL(@CreatedDate, GETDATE()));
+    END
+
+    -- READ ALL WITH PAGINATION
+    ELSE IF UPPER(@Action) = 'READ'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM VoucherEntries;
+
+        SELECT 
+            VE.Id,
+            VE.DebitAmount,
+            VE.CreditAmount,
+            VE.Narration,
+            VE.ReferenceNo,
+            VE.CreatedDate,
+            VE.ModifiedDate,
+            VE.AccountId,
+            CA.AccountName,
+            VE.VoucherTypeId,
+            VT.TypeName AS VoucherTypeName
+        FROM VoucherEntries VE
+        INNER JOIN ChartOfAccounts CA ON VE.AccountId = CA.Id
+        INNER JOIN VoucherTypes VT ON VE.VoucherTypeId = VT.Id
+        ORDER BY VE.CreatedDate DESC
+        OFFSET (@PageNumber - 1) * @PageSize ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
+    END
+
+    -- READ BY ID
+    ELSE IF UPPER(@Action) = 'READBYID'
+    BEGIN
+        SELECT 
+            VE.Id,
+            VE.DebitAmount,
+            VE.CreditAmount,
+            VE.Narration,
+            VE.ReferenceNo,
+            VE.CreatedDate,
+            VE.ModifiedDate,
+            VE.AccountId,
+            CA.AccountName,
+            VE.VoucherTypeId,
+            VT.TypeName AS VoucherTypeName
+        FROM VoucherEntries VE
+        INNER JOIN ChartOfAccounts CA ON VE.AccountId = CA.Id
+        INNER JOIN VoucherTypes VT ON VE.VoucherTypeId = VT.Id
+        WHERE VE.Id = @Id;
+    END
+
+    -- UPDATE
+    ELSE IF UPPER(@Action) = 'UPDATE'
+    BEGIN
+        UPDATE VoucherEntries
+        SET 
+            VoucherTypeId = ISNULL(@VoucherTypeId, VoucherTypeId),
+            AccountId = ISNULL(@AccountId, AccountId),
+            DebitAmount = ISNULL(@DebitAmount, DebitAmount),
+            CreditAmount = ISNULL(@CreditAmount, CreditAmount),
+            Narration = ISNULL(@Narration, Narration),
+            ReferenceNo = ISNULL(@ReferenceNo, ReferenceNo),
+            ModifiedDate = GETDATE()
+        WHERE Id = @Id;
+    END
+
+    -- DELETE
+    ELSE IF UPPER(@Action) = 'DELETE'
+    BEGIN
+        DELETE FROM VoucherEntries WHERE Id = @Id;
     END
 END
 GO
