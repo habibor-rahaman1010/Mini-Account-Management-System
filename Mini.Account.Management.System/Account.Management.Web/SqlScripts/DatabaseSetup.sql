@@ -86,6 +86,7 @@ CREATE TABLE Vouchers (
     VoucherDate DATETIME NOT NULL,
     ReferenceNo NVARCHAR(100),
     VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
+    VoucherUpdateAt DATETIME NOT NULL,
     FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
 );
 
@@ -166,6 +167,7 @@ CREATE PROCEDURE sp_ManageVouchers
     @VoucherTypeId UNIQUEIDENTIFIER = NULL,
     @PageNumber INT = NULL,
     @PageSize INT = NULL,
+    @VoucherUpdateAt DATETIME = NULL,
     @TotalCount INT = NULL OUTPUT
 AS
 BEGIN
@@ -189,6 +191,7 @@ BEGIN
         SELECT 
             V.Id,
             V.VoucherDate,
+            V.VoucherUpdateAt,
             V.ReferenceNo,
             VT.TypeName
         FROM Vouchers V
@@ -205,6 +208,7 @@ BEGIN
             V.Id,
             V.VoucherDate,
             V.ReferenceNo,
+            V.VoucherUpdateAt,
             V.VoucherTypeId,
             VT.TypeName
         FROM Vouchers V
@@ -220,7 +224,8 @@ BEGIN
         SET 
             VoucherDate = ISNULL(@VoucherDate, VoucherDate),
             ReferenceNo = ISNULL(@ReferenceNo, ReferenceNo),
-            VoucherTypeId = ISNULL(@VoucherTypeId, VoucherTypeId)
+            VoucherTypeId = ISNULL(@VoucherTypeId, VoucherTypeId),
+            VoucherUpdateAt = ISNULL(@VoucherUpdateAt, VoucherUpdateAt)
         WHERE Id = @Id;
     END
 

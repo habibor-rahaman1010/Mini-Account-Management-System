@@ -67,7 +67,8 @@ namespace Account.Management.Infrastructure.Repositories
                             Id = reader.GetGuid(reader.GetOrdinal("Id")),
                             VoucherDate = reader.GetDateTime(reader.GetOrdinal("VoucherDate")),
                             ReferenceNo = reader.GetString(reader.GetOrdinal("ReferenceNo")),
-                            VoucherTypeName = reader.GetString(reader.GetOrdinal("TypeName"))
+                            VoucherTypeName = reader.GetString(reader.GetOrdinal("TypeName")),
+                            VoucherUpdateAt = reader.GetDateTime(reader.GetOrdinal("VoucherUpdateAt"))
                         });
                     }
                     await reader.CloseAsync();
@@ -101,7 +102,8 @@ namespace Account.Management.Infrastructure.Repositories
                             VoucherDate = reader.GetDateTime(reader.GetOrdinal("VoucherDate")),
                             ReferenceNo = reader.GetString(reader.GetOrdinal("ReferenceNo")),
                             VoucherTypeId = reader.GetGuid(reader.GetOrdinal("VoucherTypeId")),
-                            VoucherTypeName = reader.GetString(reader.GetOrdinal("TypeName"))
+                            VoucherTypeName = reader.GetString(reader.GetOrdinal("TypeName")),
+                            VoucherUpdateAt = reader.GetDateTime(reader.GetOrdinal("VoucherUpdateAt")),
                         };
                     }
                 }
@@ -125,6 +127,7 @@ namespace Account.Management.Infrastructure.Repositories
                 command.Parameters.AddWithValue("@VoucherDate", voucher.VoucherDate);
                 command.Parameters.AddWithValue("@ReferenceNo", string.IsNullOrEmpty(voucher.ReferenceNo) ? DBNull.Value : voucher.ReferenceNo);
                 command.Parameters.AddWithValue("@VoucherTypeId", voucher.VoucherTypeId);
+                command.Parameters.AddWithValue("@VoucherUpdateAt", voucher.VoucherUpdateAt);
 
                 await connection.OpenAsync();
                 await command.ExecuteNonQueryAsync();

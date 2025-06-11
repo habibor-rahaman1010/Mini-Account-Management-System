@@ -1,4 +1,5 @@
-﻿using Account.Management.Domain.Dtos;
+﻿using Account.Management.Domain;
+using Account.Management.Domain.Dtos;
 using Account.Management.Domain.Entities;
 using Account.Management.Domain.ServicesInterface;
 using Account.Management.Web.Areas.Admin.Models;
@@ -17,13 +18,16 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
         private readonly string? _connectionString;
         private readonly IVoucherManagementService _voucherManagementService;
         private readonly IMapper _mapper;
+        private IApplicationTime _applicationTime;
 
         public VoucherController(IVoucherManagementService voucherManagementService, 
             IConfiguration configuration,
+            IApplicationTime applicationTime,
             IMapper mapper)
         {
             _voucherManagementService = voucherManagementService;
             _configuration = configuration;
+            _applicationTime = applicationTime;
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _mapper = mapper;
         }
@@ -97,6 +101,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             }
 
             var updateVoucher = _mapper.Map(model, existVoucher);
+            updateVoucher.VoucherUpdateAt = _applicationTime.GetCurrentTime();
             await _voucherManagementService.UpdateVoucher("UPDATE", id, updateVoucher);
             return RedirectToAction("VoucherList", "Voucher");
         }

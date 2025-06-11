@@ -10,6 +10,7 @@ namespace Account.Management.Domain.Dtos
     {
         public Guid Id { get; set; }
         public DateTime VoucherDate { get; set; }
+        public DateTime VoucherUpdateAt { get; set; }
         public string? ReferenceNo { get; set; }
         public string? VoucherTypeName { get; set; }
     }
