@@ -26,7 +26,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> AddChartOfAccount(ChartOfAccountModel model)
         {
             if (ModelState.IsValid)
@@ -34,8 +34,9 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
                 var account = _mapper.Map<ChartOfAccount>(model);
                 account.Id = Guid.NewGuid();
                 await _chartOfAccountRepository.CreateAsync("CREATE", account);
+                return RedirectToAction("ChartOfAccountList", "ChartOfAccount");
             }
-            return RedirectToAction("ChartOfAccountList", "ChartOfAccount");
+            return View(model);
         }
 
         public async Task<IActionResult> ChartOfAccountList(int page = 1, int pageSize = 10)
@@ -67,7 +68,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
                 await _chartOfAccountRepository.UpdateAsync(id, account);
                 return RedirectToAction("ChartOfAccountList", "ChartOfAccount");
             }
-            return View(model);
+            return View(_mapper.Map<ChartOfAccountUpdateDto>(model));
         }
 
         [HttpPost]

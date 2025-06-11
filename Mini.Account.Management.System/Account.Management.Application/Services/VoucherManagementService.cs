@@ -32,5 +32,10 @@ namespace Account.Management.Application.Services
         {
             await _voucherRepository.UpdateAsync(action, id, voucher);
         }
+
+        public async Task DeleteVoucher(string action, Guid id)
+        {
+            await _voucherRepository.DeleteAsync(action, id);
+        }
     }
 }

@@ -38,7 +38,7 @@
                         <td>@voucher.VoucherUpdateAt</td>
                         <td>
                             <a asp-controller="Voucher" asp-action="EditVoucher" asp-route-id="@voucher.Id" class="btn btn-sm btn-warning">Edit</a>
-                            <form method="post" asp-controller="Voucher" asp-action="Delete" asp-route-id="@voucher.Id" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this Voucher Type?');">
+                            <form method="post" asp-controller="Voucher" asp-action="RemoveVoucher" asp-route-id="@voucher.Id" asp-antiforgery=true style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this Voucher Type?');">
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </td>

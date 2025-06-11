@@ -4,47 +4,76 @@
     ViewData["Title"] = "Create Voucher";
 }
 
-<section>
-    <h2>Create Voucher</h2>
+<div>
+    <div class="container-fluid w-75 mb-3">
+        <partial name="_ResponsePartial" />
+    </div>
 
-    <form method="post" asp-controller="Voucher" asp-action="AddVoucher" class="form-horizontal" asp-antiforgery="true" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <section class="content mt-3">
+        <div class="container-fluid w-75">
+            <div class="row">
+                <!-- left column -->
+                <div class="col">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Create Voucher</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form method="post" asp-controller="Voucher" asp-action="AddVoucher" class="form-horizontal" asp-antiforgery="true" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="VoucherDate" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <input asp-for="VoucherDate" class="form-control" type="datetime-local" />
-                <span asp-validation-for="VoucherDate" class="text-danger"></span>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="VoucherDate"></label>
+                                    <input asp-for="VoucherDate" class="form-control" />
+                                    <span asp-validation-for="VoucherDate" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="ReferenceNo"></label>
+                                    <input asp-for="ReferenceNo" class="form-control" />
+                                    <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="VoucherTypeId" class="control-label"></label>
+                                    <select asp-for="VoucherTypeId" asp-items="ViewBag.VoucherTypes" class="form-control">
+                                        <option value="">Select Voucher Type</option>
+                                    </select>
+                                    <span asp-validation-for="VoucherTypeId" class="text-danger"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <button type="submit" class="btn btn-primary">Add Voucher</button>
+                                    <a asp-controller="Voucher" asp-action="VoucherList" class="btn btn-secondary">Back to List</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+                <!--/.col (left) -->
             </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="ReferenceNo" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <input asp-for="ReferenceNo" class="form-control" />
-                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="VoucherTypeId" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="VoucherTypeId" asp-items="ViewBag.VoucherTypes" class="form-control">
-                    <option value="">Select Voucher Type</option>
-                </select>
-                <span asp-validation-for="VoucherTypeId" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-            </div>
-        </div>
-    </form>
-</section>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
 }

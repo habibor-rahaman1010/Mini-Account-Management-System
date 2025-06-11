@@ -106,6 +106,18 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return RedirectToAction("VoucherList", "Voucher");
         }
 
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveVoucher(Guid id)
+        {
+            var existVoucher = await _voucherManagementService.GetVoucherById("READBYID", id);
+            if (existVoucher == null)
+            {
+                return NotFound("The voucher is not found!");
+            }
+            await _voucherManagementService.DeleteVoucher("DELETE", id);
+            return RedirectToAction("VoucherList", "Voucher");
+        }
+
         private async Task<SelectList> GetVoucherTypeSelectList(Guid? selectedValue = null)
         {
             var list = new List<SelectListItem>();
