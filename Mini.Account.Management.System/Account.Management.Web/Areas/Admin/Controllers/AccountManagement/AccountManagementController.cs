@@ -48,7 +48,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return await _roleManager.RoleExistsAsync(roleName);
         }
 
-        [HttpPost, ValidateAntiForgeryToken, Authorize("Admin")]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRole(RoleCreateModel model)
         {
             if (ModelState.IsValid)
@@ -84,7 +84,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
                 if (result.Succeeded)
                 {
                     ModelState.Clear();
-                    return View();
+                    return RedirectToAction("RoleList", "AccountManagement");
                 }
             }
             return View(model);
@@ -266,7 +266,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
 
 
         //This is delete user method...
-        [HttpPost, Authorize("Admin")]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
@@ -356,7 +356,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(new RoleUpdateModel { Name = role.Name });
         }
 
-        [HttpPost, ValidateAntiForgeryToken, Authorize("Admin")]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(Guid id, RoleUpdateModel model)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -376,7 +376,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(model);
         }
 
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());

@@ -5,13 +5,14 @@ using Account.Management.Domain.ServicesInterface;
 using Account.Management.Web.Areas.Admin.Models;
 using Account.Management.Web.Utitlity;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class VoucherController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -32,13 +33,14 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> AddVoucher()
         {
             ViewBag.VoucherTypes = await GetVoucherTypeSelectList();
             return View();
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> AddVoucher(VoucherModel model)
         {
             if (ModelState.IsValid)
@@ -51,6 +53,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public async Task<IActionResult> VoucherList(int pageNumber = 1, int pageSize = 10)
         {
             var (vouchers, totalCount) = await _voucherManagementService.GetVouchers("READ", pageNumber, pageSize);
@@ -71,6 +74,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> EditVoucher(Guid id)
         {
             var existVoucher = await _voucherManagementService.GetVoucherById("READBYID", id);
@@ -85,7 +89,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
         }
 
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> EditVoucher(Guid id, VoucherUpdateModel model)
         {
             if (!ModelState.IsValid)
@@ -106,7 +110,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return RedirectToAction("VoucherList", "Voucher");
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> RemoveVoucher(Guid id)
         {
             var existVoucher = await _voucherManagementService.GetVoucherById("READBYID", id);

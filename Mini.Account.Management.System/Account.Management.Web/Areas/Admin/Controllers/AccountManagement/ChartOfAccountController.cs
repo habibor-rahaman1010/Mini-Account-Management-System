@@ -21,12 +21,13 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult AddChartOfAccount()
         {
             return View();
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddChartOfAccount(ChartOfAccountModel model)
         {
             if (ModelState.IsValid)
@@ -39,6 +40,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public async Task<IActionResult> ChartOfAccountList(int page = 1, int pageSize = 10)
         {
             var accounts = await _chartOfAccountRepository.GetChartOfAccountsAsync(page, pageSize);
@@ -52,6 +54,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateChartOfAccount(Guid id)
         {
             var account = await _chartOfAccountRepository.GetById(id);
@@ -59,7 +62,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(accountUpdateDto);
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateChartOfAccount(Guid id, ChartOfAccountUpdate model)
         {
             if (ModelState.IsValid)
@@ -71,7 +74,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.AccountManagement
             return View(_mapper.Map<ChartOfAccountUpdateDto>(model));
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteChartOfAccount(Guid id)
         {
             await _chartOfAccountRepository.DeleteAsync("DELETE", id);

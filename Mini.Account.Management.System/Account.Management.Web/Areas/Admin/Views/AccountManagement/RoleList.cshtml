@@ -16,7 +16,9 @@
 
 <div class="container-fluid roles">
     <h2>Role List</h2>
-
+    <div class="container-fluid mb-3">
+        <partial name="_ResponsePartial" />
+    </div>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -80,3 +82,15 @@
         </ul>
     </nav>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+}

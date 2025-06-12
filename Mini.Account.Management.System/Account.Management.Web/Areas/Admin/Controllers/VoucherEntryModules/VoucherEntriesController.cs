@@ -9,10 +9,11 @@ using Account.Management.Domain.Entities;
 using Account.Management.Domain.Dtos;
 using Account.Management.Web.Utitlity;
 using Account.Management.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class VoucherEntriesController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -33,6 +34,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> AddVoucherEntry()
         {
             ViewBag.ChatOfAccounts = await GetAccountSelectList();
@@ -40,7 +42,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View();
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> AddVoucherEntry(VoucherEntryCreateModel model)
         {
             if (ModelState.IsValid)
@@ -53,7 +55,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
-
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public async Task<IActionResult> VoucherEntryList(int pageNumber = 1, int pageSize = 10)
         {
             var (voucherEntries, totalCount) = await _voucherEntriesManagementService.GetVoucherEntries("READ", pageNumber, pageSize);
@@ -73,6 +75,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditVoucherEntry(Guid id)
         {
             var existingVoucherEntry = await _voucherEntriesManagementService.GetVoucherEntryById("READBYID", id);
@@ -87,7 +90,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(updateVoucherEntry);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditVoucherEntry(Guid id, VoucherEntryUpdateModel model)
         {
             if (!ModelState.IsValid)
@@ -108,6 +111,17 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return RedirectToAction("VoucherEntryList", "VoucherEntries");
         }
 
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveVoucherEntry(Guid id)
+        {
+            var hasVoucherEntry = await _voucherEntriesManagementService.GetVoucherEntryById("READBYID", id);
+            if (hasVoucherEntry == null)
+            {
+                return NotFound("The voucher entry is not found!");
+            }
+            await _voucherEntriesManagementService.DeleteVoucherEntry("DELETE", id);
+            return RedirectToAction("VoucherEntryList", "VoucherEntries");
+        }
 
         private async Task<SelectList> GetAccountSelectList(Guid? selectedValue = null)
         {

@@ -4,11 +4,12 @@ using Account.Management.Domain.ServicesInterface;
 using Account.Management.Web.Areas.Admin.Models;
 using Account.Management.Web.Utitlity;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class VoucherTypeController : Controller
     {
         private readonly IVoucherTypeManagementService _voucherTypeManagementService;
@@ -19,6 +20,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin, Accountant, Viewer")]
         public async Task<IActionResult> VoucherTypeList(int pageNumber = 1, int pageSize = 10)
         {
             var(voucherTypes, totalCount)  = await _voucherTypeManagementService.GetVoucherTypes("READ", pageNumber, pageSize);
@@ -39,12 +41,13 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Accountant")]
         public IActionResult CreateVoucherType()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin, Accountant")]
         public async Task<IActionResult> CreateVoucherType(VoucherTypeModel model)
         {
             if (ModelState.IsValid)
@@ -57,6 +60,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditVoucherType(Guid id)
         {
             var existVoucherType = await _voucherTypeManagementService.GetVoucherTypeById("READBYID", id);
@@ -67,7 +71,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(_mapper.Map<VoucherTypeUpdateModel>(existVoucherType));
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditVoucherType(Guid id, VoucherTypeUpdateModel model)
         {
             var existVoucherType = await _voucherTypeManagementService.GetVoucherTypeById("READBYID", id);
@@ -80,7 +84,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return RedirectToAction("VoucherTypeList", "VoucherType");
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _voucherTypeManagementService.DeleteVoucherType("DELETE", id);

@@ -151,5 +151,22 @@ namespace Account.Management.Infrastructure.Repositories
                 }
             }
         }
+
+        public async Task DeleteAsync(string action, Guid id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_ManageVoucherEntries", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", action);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                    await connection.CloseAsync();
+                }
+            }
+        }
     }
 }
