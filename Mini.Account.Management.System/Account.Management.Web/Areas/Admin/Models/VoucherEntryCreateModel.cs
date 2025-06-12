@@ -24,14 +24,14 @@ namespace Account.Management.Web.Areas.Admin.Models
 
         [Required(ErrorMessage = "Created Date is required.")]
         [DataType(DataType.Date)]
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
-        [Required(ErrorMessage = "Account Name is required.")]
-        [Display(Name = "Account Name")]
-        public Guid? AccountId { get; set; }
+        [Required(ErrorMessage = "Chart of account is required.")]
+        [Display(Name = "Chart Of Account")]
+        public Guid AccountId { get; set; }
 
         [Required(ErrorMessage = "Voucher is required.")]
         [Display(Name = "Voucher Type")]
-        public Guid? VoucherTypeId { get; set; }
+        public Guid VoucherTypeId { get; set; }
     }
 }

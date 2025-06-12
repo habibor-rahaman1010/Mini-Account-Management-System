@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Account.Management.Domain.Entities;
+using Account.Management.Domain.Dtos;
+using Account.Management.Web.Utitlity;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 {
@@ -44,16 +46,31 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             {
                 var voucherEntry = _mapper.Map<VoucherEntry>(model);
                 voucherEntry.Id = Guid.NewGuid();
-                await _voucherEntriesManagementService.CreateVoucher("CREATE", voucherEntry);
+                await _voucherEntriesManagementService.CreateVoucherEntry("CREATE", voucherEntry);
                 return RedirectToAction("VoucherList", "Voucher");
             }
             return View(model);
         }
 
 
+        public async Task<IActionResult> VoucherEntryList(int pageNumber = 1, int pageSize = 10)
+        {
+            var (voucherEntries, totalCount) = await _voucherEntriesManagementService.GetVoucherEntries("READ", pageNumber, pageSize);
+            if (voucherEntries == null || voucherEntries.Count() <= 0)
+            {
+                ViewBag.Message = "No data available";
+                voucherEntries = new List<VoucherEntry>();
+            }
 
+            var pager = new Pager(totalCount, pageNumber, pageSize);
 
-
+            var model = new VoucherEntryListViewModel()
+            {
+                VoucherEntries = _mapper.Map<IList<VoucherEntryDto>>(voucherEntries),
+                Pager = pager
+            };
+            return View(model);
+        }
 
 
 

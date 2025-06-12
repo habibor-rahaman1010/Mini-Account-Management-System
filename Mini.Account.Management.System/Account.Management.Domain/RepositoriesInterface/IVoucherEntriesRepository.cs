@@ -10,12 +10,12 @@ namespace Account.Management.Domain.RepositoriesInterface
     public interface IVoucherEntriesRepository
     {
 
-        public Task CreateAsync(string action, VoucherEntry voucher);
-
-        /*public Task<(IList<Voucher>, int)> GetAllAsync(string action, int pageNumber, int pageSize);
+        public Task CreateAsync(string action, VoucherEntry voucherEntry);
+        public Task<(IList<VoucherEntry>, int)> GetAllAsync(string action, int pageNumber, int pageSize);
+        /*
         public Task UpdateAsync(string action, Guid id, Voucher voucher);
         public Task<Voucher> GetByIdAsync(string action, Guid id);
         public Task DeleteAsync(string action, Guid id);*/
-        
+
     }
 }
