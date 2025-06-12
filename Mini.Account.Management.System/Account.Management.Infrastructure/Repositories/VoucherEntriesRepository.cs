@@ -2,6 +2,7 @@
 using Account.Management.Domain.RepositoriesInterface;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using System.Data;
 
 namespace Account.Management.Infrastructure.Repositories
@@ -25,7 +26,7 @@ namespace Account.Management.Infrastructure.Repositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@Action", "CREATE");
+                    command.Parameters.AddWithValue("@Action", action);
                     command.Parameters.AddWithValue("@VoucherTypeId", voucherEntry.VoucherTypeId);
                     command.Parameters.AddWithValue("@AccountId", voucherEntry.AccountId);
                     command.Parameters.AddWithValue("@DebitAmount", voucherEntry.DebitAmount);
@@ -36,6 +37,7 @@ namespace Account.Management.Infrastructure.Repositories
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
+                    await connection.CloseAsync();
                 }
             }
         }
@@ -84,6 +86,70 @@ namespace Account.Management.Infrastructure.Repositories
                 }
             }
             return (voucherEntryList, totalCount);
+        }
+
+        public async Task<VoucherEntry> GetByIdAsync(string action, Guid id)
+        {
+            VoucherEntry voucherEntry = null;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_ManageVoucherEntries", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", action);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            voucherEntry = new VoucherEntry
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                DebitAmount = reader.GetDecimal(reader.GetOrdinal("DebitAmount")),
+                                CreditAmount = reader.GetDecimal(reader.GetOrdinal("CreditAmount")),
+                                Narration = reader.GetString(reader.GetOrdinal("Narration")),
+                                ReferenceNo = reader.GetString(reader.GetOrdinal("ReferenceNo")),
+                                CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
+                                ModifiedDate = reader.IsDBNull(reader.GetOrdinal("ModifiedDate")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("ModifiedDate")),
+                                AccountId = reader.GetGuid(reader.GetOrdinal("AccountId")),
+                                AccountName = reader.GetString(reader.GetOrdinal("AccountName")),
+                                VoucherTypeId = reader.GetGuid(reader.GetOrdinal("VoucherTypeId")),
+                                VoucherTypeName = reader.GetString(reader.GetOrdinal("VoucherTypeName")),
+                            };
+                        }
+                    }
+                    await connection.CloseAsync();
+                }
+            }
+            return voucherEntry;
+        }
+
+        public async Task UpdateAsync(string action, Guid id, VoucherEntry voucherEntry)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_ManageVoucherEntries", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", action);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    command.Parameters.AddWithValue("@VoucherTypeId", voucherEntry.VoucherTypeId);
+                    command.Parameters.AddWithValue("@AccountId", voucherEntry.AccountId);
+                    command.Parameters.AddWithValue("@DebitAmount", voucherEntry.DebitAmount);
+                    command.Parameters.AddWithValue("@ReferenceNo", voucherEntry.ReferenceNo);
+                    command.Parameters.AddWithValue("@CreditAmount", voucherEntry.CreditAmount);
+                    command.Parameters.AddWithValue("@Narration", voucherEntry.Narration ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@ModifiedDate", voucherEntry.ModifiedDate == default ? (object)DBNull.Value : voucherEntry.ModifiedDate);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                    await connection.CloseAsync();
+                }
+            }
         }
     }
 }

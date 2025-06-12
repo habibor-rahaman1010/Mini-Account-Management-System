@@ -44,9 +44,16 @@
                         <td>@voucherEntry.Narration</td>
                         <td>@voucherEntry.ReferenceNo</td>
                         <td>@voucherEntry.CreatedDate</td>
-                        <td>@voucherEntry.ModifiedDate</td>
+                        @if (@voucherEntry.ModifiedDate == null)
+                        {
+                            <td>Not updated till now!</td>
+                        }
+                        else{
+                            <td>@voucherEntry.ModifiedDate</td>
+                        }
+
                         <td>
-                            <a asp-controller="VoucherEntries" asp-action="EditVoucher" asp-route-id="@voucherEntry.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-controller="VoucherEntries" asp-action="EditVoucherEntry" asp-route-id="@voucherEntry.Id" class="btn btn-sm btn-warning">Edit</a>
                             <form method="post" asp-controller="VoucherEntries" asp-action="RemoveVoucher" asp-route-id="@voucherEntry.Id" asp-antiforgery=true style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this Voucher Type?');">
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>

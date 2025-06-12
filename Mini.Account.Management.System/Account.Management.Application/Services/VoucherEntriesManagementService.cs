@@ -13,14 +13,24 @@ namespace Account.Management.Application.Services
             _voucherEntriesRepository = voucherEntriesRepository;
         }
 
-        public async Task CreateVoucherEntry(string action, VoucherEntry voucher)
+        public async Task CreateVoucherEntry(string action, VoucherEntry voucherEntry)
         {
-            await _voucherEntriesRepository.CreateAsync(action, voucher);
+            await _voucherEntriesRepository.CreateAsync(action, voucherEntry);
         }
 
         public Task<(IList<VoucherEntry> voucherEntries, int totalCount)> GetVoucherEntries(string action, int pageNumber, int pageSize)
         {
             return _voucherEntriesRepository.GetAllAsync(action, pageNumber, pageSize);
+        }
+
+        public async Task<VoucherEntry> GetVoucherEntryById(string action, Guid id)
+        {
+            return await _voucherEntriesRepository.GetByIdAsync(action, id);
+        }
+
+        public async Task UpdateVoucherEntry(string action, Guid id, VoucherEntry voucherEntry)
+        {
+            await _voucherEntriesRepository.UpdateAsync(action, id, voucherEntry);
         }
     }
 }

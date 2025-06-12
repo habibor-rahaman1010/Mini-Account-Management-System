@@ -1,0 +1,101 @@
+﻿@model VoucherEntryUpdateModel
+
+@{
+    ViewData["Title"] = "Create Voucher Entry";
+}
+
+<div>
+    <div class="container-fluid w-75 mb-3">
+        <partial name="_ResponsePartial" />
+    </div>
+
+    <section class="content mt-3">
+        <div class="container-fluid w-75">
+            <div class="row">
+                <!-- left column -->
+                <div class="col">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Update Voucher Entry</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form method="post" asp-controller="VoucherEntries" asp-action="EditVoucherEntry" class="form-horizontal" asp-antiforgery="true" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="DebitAmount"></label>
+                                    <input asp-for="DebitAmount" type="number" class="form-control" />
+                                    <span asp-validation-for="DebitAmount" class="text-danger"></span>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label asp-for="CreditAmount"></label>
+                                    <input asp-for="CreditAmount" type="number" class="form-control" />
+                                    <span asp-validation-for="CreditAmount" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="ReferenceNo"></label>
+                                    <input asp-for="ReferenceNo" class="form-control" />
+                                    <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Narration"></label>
+                                    <input asp-for="Narration" class="form-control" />
+                                    <span asp-validation-for="Narration" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="AccountId" class="control-label"></label>
+                                    <select asp-for="AccountId" asp-items="ViewBag.ChatOfAccounts" class="form-control">
+                                        <option value="">Select Account</option>
+                                    </select>
+                                    <span asp-validation-for="AccountId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="VoucherTypeId" class="control-label"></label>
+                                    <select asp-for="VoucherTypeId" asp-items="ViewBag.VoucherTypes" class="form-control">
+                                        <option value="">Select Voucher</option>
+                                    </select>
+                                    <span asp-validation-for="VoucherTypeId" class="text-danger"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <button type="submit" class="btn btn-primary">Update Voucher Entry</button>
+                                    <a asp-controller="Voucher" asp-action="VoucherList" class="btn btn-secondary">Back to List</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+                <!--/.col (left) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        //This code for temp data response fadeOut
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#response-alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+}
+

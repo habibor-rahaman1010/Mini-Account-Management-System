@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using Account.Management.Domain.Entities;
 using Account.Management.Domain.Dtos;
 using Account.Management.Web.Utitlity;
+using Account.Management.Application.Services;
 
 namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
 {
@@ -47,7 +48,7 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
                 var voucherEntry = _mapper.Map<VoucherEntry>(model);
                 voucherEntry.Id = Guid.NewGuid();
                 await _voucherEntriesManagementService.CreateVoucherEntry("CREATE", voucherEntry);
-                return RedirectToAction("VoucherList", "Voucher");
+                return RedirectToAction("VoucherEntryList", "VoucherEntries");
             }
             return View(model);
         }
@@ -72,7 +73,40 @@ namespace Account.Management.Web.Areas.Admin.Controllers.VoucherEntryModules
             return View(model);
         }
 
+        public async Task<IActionResult> EditVoucherEntry(Guid id)
+        {
+            var existingVoucherEntry = await _voucherEntriesManagementService.GetVoucherEntryById("READBYID", id);
+            if (existingVoucherEntry == null)
+            {
+                return NotFound("Voucher entry not found!");
+            }
+            var updateVoucherEntry = _mapper.Map<VoucherEntryUpdateModel>(existingVoucherEntry);
+            ViewBag.ChatOfAccounts = await GetAccountSelectList(updateVoucherEntry.AccountId);
+            ViewBag.VoucherTypes = await GetVoucherTypeSelectList(updateVoucherEntry.VoucherTypeId);
 
+            return View(updateVoucherEntry);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVoucherEntry(Guid id, VoucherEntryUpdateModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ChatOfAccounts = await GetAccountSelectList(model.AccountId);
+                ViewBag.VoucherTypes = await GetVoucherTypeSelectList(model.VoucherTypeId);
+                return View(model);
+            }
+
+            var existingVoucherEntry = await _voucherEntriesManagementService.GetVoucherEntryById("READBYID", id);
+            if (existingVoucherEntry == null)
+            {
+                return NotFound("Voucher entry not found!");
+            }
+            var updateVoucherEntry = _mapper.Map(model, existingVoucherEntry);
+            updateVoucherEntry.ModifiedDate = _applicationTime.GetCurrentTime();
+            await _voucherEntriesManagementService.UpdateVoucherEntry("UPDATE", id, updateVoucherEntry);
+            return RedirectToAction("VoucherEntryList", "VoucherEntries");
+        }
 
 
         private async Task<SelectList> GetAccountSelectList(Guid? selectedValue = null)
