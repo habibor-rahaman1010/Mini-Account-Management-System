@@ -46,7 +46,7 @@ namespace Account.Management.Infrastructure.Repositories
                 using (var command = new SqlCommand("sp_ManageVouchers", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue(@"Action", action);
+                    command.Parameters.AddWithValue("@Action", action);
                     command.Parameters.AddWithValue("@PageNumber", pageNumber);
                     command.Parameters.AddWithValue("@PageSize", pageSize);
 

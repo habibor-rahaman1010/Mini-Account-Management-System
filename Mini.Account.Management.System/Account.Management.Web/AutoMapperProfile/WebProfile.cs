@@ -11,9 +11,10 @@ namespace Account.Management.Web.AutoMapperProfile
         public WebProfile()
         {
             CreateMap<UserUpdateModel, ApplicationUser>().ReverseMap();
+            CreateMap<ChartOfAccountDto, ChartOfAccount>().ReverseMap();
+            CreateMap<ChartOfAccountUpdateDto, ChartOfAccount>().ReverseMap();
             CreateMap<ChartOfAccountModel, ChartOfAccount>().ReverseMap();
-            CreateMap<ChartOfAccountUpdate, ChartOfAccountUpdateDto>().ReverseMap();
-            CreateMap<ChartOfAccountDto, ChartOfAccountUpdateDto>().ReverseMap();
+            CreateMap<ChartOfAccountUpdate, ChartOfAccount>().ReverseMap();
             CreateMap<VoucherTypeModel, VoucherType>().ReverseMap();
             CreateMap<VoucherType, VoucherTypeDto>().ReverseMap();
             CreateMap<VoucherTypeUpdateModel, VoucherType>().ReverseMap();

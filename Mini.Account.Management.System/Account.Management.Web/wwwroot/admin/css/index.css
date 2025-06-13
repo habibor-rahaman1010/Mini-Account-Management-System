@@ -1,0 +1,21 @@
+﻿.main{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid lightgray;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.child {
+    border: 1px solid lightgray;
+    padding: 10px 30px;
+    background: teal;
+    color: white;
+    border-radius: 5px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.child > p{
+    font-size: 30px;
+    font-weight: 500;
+}

@@ -20,6 +20,7 @@ namespace Account.Management.Infrastructure.Extentions
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, (m) => m.MigrationsAssembly(migrationAssembly)));
             services.AddScoped<IApplicationTime, ApplicationTime>();
             services.AddScoped<IChartOfAccountRepository, ChartOfAccountRepository>();
+            services.AddScoped<IChartOfAccountManagementService, ChartOfAccountManagementService>();
             services.AddScoped<IVoucherTypeRepository, VoucherTypeRepository>();
             services.AddScoped<IVoucherTypeManagementService, VoucherTypeManagementService>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();

@@ -8,7 +8,7 @@ CREATE TABLE ChartOfAccounts (
     IsActive BIT NOT NULL DEFAULT 1,
     ParentId UNIQUEIDENTIFIER NULL,
     CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    ModifiedDate DATETIME NULL
+    ModifiedDate DATETIME NULL,
 
     CONSTRAINT FK_ChartOfAccounts_ParentId
         FOREIGN KEY (ParentId)
@@ -16,20 +16,24 @@ CREATE TABLE ChartOfAccounts (
 );
 GO
 
-CREATE PROCEDURE sp_ManageChartOfAccounts
-    @Action NVARCHAR(10),
-    @Id UNIQUEIDENTIFIER,
+-- stored procedure of ChartOfAccounts
+CREATE OR ALTER PROCEDURE sp_ManageChartOfAccounts
+    @Action NVARCHAR(20),
+    @Id UNIQUEIDENTIFIER = NULL,
     @AccountName NVARCHAR(100) = NULL,
     @Code NVARCHAR(50) = NULL,
     @Description NVARCHAR(200) = NULL,
     @AccountType NVARCHAR(50) = NULL,
     @IsActive BIT = 1,
-    @ParentId UNIQUEIDENTIFIER = NULL
+    @ParentId UNIQUEIDENTIFIER = NULL,
+    @PageNumber INT = NULL,
+    @PageSize INT = NULL,
+    @TotalCount INT = NULL OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF @Action = 'CREATE'
+    IF UPPER(@Action) = 'CREATE'
     BEGIN
         INSERT INTO ChartOfAccounts (
             Id,
@@ -53,7 +57,45 @@ BEGIN
         );
     END
 
-    ELSE IF @Action = 'UPDATE'
+    ELSE IF UPPER(@Action) = 'READ'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM ChartOfAccounts;
+
+        DECLARE @StartRow INT = (@PageNumber - 1) * @PageSize;
+
+        SELECT 
+            Id,
+            AccountName,
+            Code,
+            Description,
+            AccountType,
+            IsActive,
+            ParentId,
+            CreatedDate,
+            ModifiedDate
+        FROM ChartOfAccounts
+        ORDER BY CreatedDate DESC
+        OFFSET @StartRow ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
+    END
+
+    ELSE IF UPPER(@Action) = 'READBYID'
+    BEGIN
+        SELECT 
+            Id,
+            AccountName,
+            Code,
+            Description,
+            AccountType,
+            IsActive,
+            ParentId,
+            CreatedDate,
+            ModifiedDate
+        FROM ChartOfAccounts
+        WHERE Id = @Id;
+    END
+
+    ELSE IF UPPER(@Action) = 'UPDATE'
     BEGIN
         UPDATE ChartOfAccounts
         SET
@@ -67,48 +109,18 @@ BEGIN
         WHERE Id = @Id;
     END
 
-    ELSE IF @Action = 'DELETE'
+    ELSE IF UPPER(@Action) = 'DELETE'
     BEGIN
-        DELETE FROM ChartOfAccounts WHERE Id = @Id;
+        DELETE FROM ChartOfAccounts
+        WHERE Id = @Id;
     END
 END;
-
-
--- Voucher Entry Module Tables
-
-CREATE TABLE VoucherTypes (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    TypeName NVARCHAR(50) NOT NULL
-);
-
-CREATE TABLE Vouchers (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    VoucherDate DATETIME NOT NULL,
-    ReferenceNo NVARCHAR(100),
-    VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
-    VoucherUpdateAt DATETIME NOT NULL,
-    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
-);
-
-CREATE TABLE VoucherEntries (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    DebitAmount DECIMAL(18, 2) DEFAULT 0,
-    CreditAmount DECIMAL(18, 2) DEFAULT 0,
-    Narration NVARCHAR(255),
-    ReferenceNo NVARCHAR(100),
-    VoucherTypeId UNIQUEIDENTIFIER NOT NULL,
-    AccountId UNIQUEIDENTIFIER NOT NULL, -- ChartOfAccounts.Id
-    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    ModifiedDate DATETIME NULL,
-
-    FOREIGN KEY (AccountId) REFERENCES ChartOfAccounts(Id),
-    FOREIGN KEY (VoucherTypeId) REFERENCES VoucherTypes(Id)
-);
 GO
 
+
 -- stored procedure of VoucherTypes
-ALTER PROCEDURE sp_Manage_VoucherType
-    @Action NVARCHAR(10),
+CREATE OR ALTER PROCEDURE sp_Manage_VoucherType
+    @Action NVARCHAR(20),
     @Id UNIQUEIDENTIFIER = NULL,
     @TypeName NVARCHAR(50) = NULL,
     @PageNumber INT = NULL,
@@ -162,8 +174,8 @@ END;
 GO
 
 -- stored procedure of Vouchers
-CREATE PROCEDURE sp_ManageVouchers
-    @Action NVARCHAR(10),
+CREATE OR ALTER PROCEDURE sp_ManageVouchers
+    @Action NVARCHAR(20),
     @Id UNIQUEIDENTIFIER = NULL,
     @VoucherDate DATE = NULL,
     @ReferenceNo NVARCHAR(100) = NULL,

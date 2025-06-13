@@ -5,7 +5,7 @@ namespace Account.Management.Web.Areas.Admin.Models
 {
     public class ChartOfAccountListViewModel
     {
-        public IEnumerable<ChartOfAccountDto> chartOfAccountDtos { get; set; }
-        public Pager Pager { get; set; }
+        public IEnumerable<ChartOfAccountDto>? ChartOfAccounts { get; set; }
+        public Pager? Pager { get; set; }
     }
 }
