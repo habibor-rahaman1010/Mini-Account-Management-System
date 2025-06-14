@@ -1,9 +1,4 @@
 ﻿using Account.Management.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Account.Management.Domain.ServicesInterface
 {
@@ -14,5 +9,6 @@ namespace Account.Management.Domain.ServicesInterface
         public Task UpdateVoucherType(string action, Guid id, VoucherType voucherType);
         public Task<VoucherType> GetVoucherTypeById(string action, Guid id);
         public Task DeleteVoucherType(string action, Guid id);
+        public Task<int> GetTotalVoucherTypesCountAsync(string action);
     }
 }

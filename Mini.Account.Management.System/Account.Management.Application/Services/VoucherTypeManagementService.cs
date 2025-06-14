@@ -36,5 +36,10 @@ namespace Account.Management.Application.Services
         {
             await _voucherTypeRepository.DeleteAsync(action, id);
         }
+
+        public async Task<int> GetTotalVoucherTypesCountAsync(string action)
+        {
+            return await _voucherTypeRepository.GetTotalCountAsync(action);
+        }
     }
 }

@@ -33,6 +33,11 @@ namespace Account.Management.Application.Services
             return await _chartOfAccountRepository.GetChartOfAccountsAsync(action, pageNumber, pageSize);
         }
 
+        public async Task<int> GetTotalChartOfAccountsCountAsync(string action)
+        {
+            return await _chartOfAccountRepository.GetTotalCountAsync(action);
+        }
+
         public async Task UpdateChatOfAccount(string action, Guid id, ChartOfAccount chartOfAccount)
         {
             await _chartOfAccountRepository.UpdateAsync(action, id, chartOfAccount);

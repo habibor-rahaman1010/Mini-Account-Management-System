@@ -9,5 +9,6 @@ namespace Account.Management.Domain.ServicesInterface
         public Task UpdateVoucherEntry(string action, Guid id, VoucherEntry voucherEntry);
         public Task<VoucherEntry> GetVoucherEntryById(string action, Guid id);
         public Task DeleteVoucherEntry(string action, Guid id);
+        public Task<int> GetTotalVoucherEntriesCountAsync(string action);
     }
 }

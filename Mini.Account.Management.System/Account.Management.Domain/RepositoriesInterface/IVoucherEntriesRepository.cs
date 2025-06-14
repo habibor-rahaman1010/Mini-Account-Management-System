@@ -10,6 +10,6 @@ namespace Account.Management.Domain.RepositoriesInterface
         public Task<VoucherEntry> GetByIdAsync(string action, Guid id);
         public Task UpdateAsync(string action, Guid id, VoucherEntry voucherEntry);
         public Task DeleteAsync(string action, Guid id);
-
+        public Task<int> GetTotalCountAsync(string action);
     }
 }

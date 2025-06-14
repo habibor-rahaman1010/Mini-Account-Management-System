@@ -1,53 +1,75 @@
-﻿@{   
+﻿@model DashboardItemCountModel
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
-@section Styles{
+@section Styles {
     <link href="~/admin/css/index.css" rel="stylesheet" />
 }
 
 <div class="main">
-    <div class="child">
+    <div class="child-1">
         <p>Total User</p>
-        <p>@ViewBag.TotalUser</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalUser</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="AccountManagement" asp-action="GetUserList">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total User Role </p>
-        <p>@ViewBag.TotalRole</p>
+    <div class="child-2">
+        <p>Total User Role</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalRole</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="AccountManagement" asp-action="RoleList">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total Voucher Entry </p>
-        <p>20</p>
+    <div class="child-3">
+        <p>Total Chart Of Account</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalChartOfAccount</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="ChartOfAccount" asp-action="ChartOfAccountList">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total Voucher Entry </p>
-        <p>20</p>
+    <div class="child-4">
+        <p>Total Voucher Tyep</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalVoucherType</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="VoucherType" asp-action="VoucherTypeList">Go To There</a>
+        </div>
     </div>
 
-</div>
-
-<div class="main">
-    <div class="child">
-        <p>Total User</p>
-        <p>@ViewBag.TotalUser</p>
+    <div class="child-4">
+        <p>Total Voucher</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalVoucher</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="Voucher" asp-action="VoucherList">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total User Role </p>
-        <p>@ViewBag.TotalRole</p>
+    <div class="child-3">
+        <p>Total Voucher Entry</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">@Model.TotalVoucherEntry</p>
+            <a class="text-decoration-none text-white" asp-area="Admin" asp-controller="VoucherEntries" asp-action="VoucherEntryList">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total Voucher Entry </p>
-        <p>20</p>
+    <div class="child-2">
+        <p>Total Account</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">25</p>
+            <a class="text-decoration-none text-white" asp-action="">Go To There</a>
+        </div>
     </div>
 
-    <div class="child">
-        <p>Total Voucher Entry </p>
-        <p>20</p>
+    <div class="child-1">
+        <p>Total Account Type</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">8</p>
+            <a class="text-decoration-none text-white" asp-action="">Go To There</a>
+        </div>
     </div>
-
 </div>

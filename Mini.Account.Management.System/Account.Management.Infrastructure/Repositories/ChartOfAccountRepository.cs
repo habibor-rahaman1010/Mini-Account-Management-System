@@ -158,5 +158,30 @@ namespace Account.Management.Infrastructure.Repositories
                 }
             }
         }
+
+        public async Task<int> GetTotalCountAsync(string action)
+        {
+            int totalCount = 0;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("sp_ManageChartOfAccounts", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", action);
+
+                    var totalCountParam = new SqlParameter("@TotalCount", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalCountParam);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    totalCount = (int)(totalCountParam.Value ?? 0);
+                }
+            }
+           return totalCount;
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace Account.Management.Domain.ServicesInterface
         public Task UpdateChatOfAccount(string action, Guid id, ChartOfAccount chatOfAccount);
         public Task<ChartOfAccount> ChartOfAccountById(string action, Guid id);
         public Task DeleteChartOfAccount(string action, Guid id);
+        public Task<int> GetTotalChartOfAccountsCountAsync(string action);
     }
 }

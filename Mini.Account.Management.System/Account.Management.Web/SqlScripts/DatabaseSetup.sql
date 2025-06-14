@@ -114,6 +114,11 @@ BEGIN
         DELETE FROM ChartOfAccounts
         WHERE Id = @Id;
     END
+
+    ELSE IF UPPER(@Action) = 'COUNT'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM ChartOfAccounts;
+    END
 END;
 GO
 
@@ -130,13 +135,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF @Action = 'CREATE'
+    IF UPPER(@Action) = 'CREATE'
     BEGIN
         INSERT INTO VoucherTypes (Id, TypeName)
         VALUES (@Id, @TypeName);
     END
 
-    ELSE IF @Action = 'READ'
+    ELSE IF UPPER(@Action) = 'READ'
     BEGIN
         -- Total Count ber kora
         SELECT @TotalCount = COUNT(*) FROM VoucherTypes;
@@ -151,24 +156,29 @@ BEGIN
         FETCH NEXT @PageSize ROWS ONLY;
     END
 
-    ELSE IF @Action = 'READBYID'
+    ELSE IF UPPER(@Action) = 'READBYID'
     BEGIN
         SELECT Id, TypeName
         FROM VoucherTypes
         WHERE Id = @Id;
     END
 
-    ELSE IF @Action = 'UPDATE'
+    ELSE IF UPPER(@Action) = 'UPDATE'
     BEGIN
         UPDATE VoucherTypes
         SET TypeName = @TypeName
         WHERE Id = @Id;
     END
 
-    ELSE IF @Action = 'DELETE'
+    ELSE IF UPPER(@Action) = 'DELETE'
     BEGIN
         DELETE FROM VoucherTypes
         WHERE Id = @Id;
+    END
+
+    ELSE IF UPPER(@Action) = 'COUNT'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM VoucherTypes;
     END
 END;
 GO
@@ -249,12 +259,13 @@ BEGIN
     BEGIN
         DELETE FROM Vouchers WHERE Id = @Id;
     END
+
+    ELSE IF UPPER(@Action) = 'COUNT'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM Vouchers;
+    END
 END
 GO
-
-
-
-
 
 
 -- stored procedure of Vouchers Entries
@@ -350,6 +361,11 @@ BEGIN
     ELSE IF UPPER(@Action) = 'DELETE'
     BEGIN
         DELETE FROM VoucherEntries WHERE Id = @Id;
+    END
+
+    ELSE IF UPPER(@Action) = 'COUNT'
+    BEGIN
+        SELECT @TotalCount = COUNT(*) FROM VoucherEntries;
     END
 END
 GO
